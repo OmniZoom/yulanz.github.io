@@ -1,0 +1,42 @@
+---
+import Sidebar from "./Sidebar.astro";
+import Icon from "./Icon.astro";
+import VideoEmbed from "./VideoEmbed.astro";
+import { caseStudy } from "../data/case-study";
+import { project, type Locale } from "../data/site";
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const copy = project[locale];
+const sections = caseStudy[locale];
+const projectHref = locale === "en" ? "/#projects" : "/zh/#projects";
+---
+<div class="site-shell case-shell"><Sidebar locale={locale} mode="case" />
+  <main class="main-column case-study">
+    <header class="case-hero">
+      <p class="eyebrow">{copy.eyebrow}</p><h1>{copy.title}</h1><p class="lede">{copy.summary}</p>
+      <div class="paper-actions"><a href="#problem"><Icon name="document" />{locale === "en" ? "Read the full case" : "阅读完整案例"}</a><a href="https://github.com/abigailmounind/enterprise-agent" target="_blank" rel="noreferrer"><Icon name="github" />{copy.actions.github}</a></div>
+      <div class="case-meta"><span>{copy.status}</span><span>2026</span><span>Product · AI · Engineering</span></div>
+      <img src="/images/enterprise-agent/workspace.png" alt={locale === "en" ? "Enterprise Engineering Copilot workspace" : "Enterprise Engineering Copilot 工作台"} />
+    </header>
+    <section class="case-summary" aria-label={locale === "en" ? "Case overview" : "案例概览"}>
+      <div><span>{locale === "en" ? "PROBLEM" : "问题"}</span><p>{locale === "en" ? "Engineers need fast answers without losing authorization, evidence, or failure visibility." : "工程师需要快速获得答案，但不能牺牲权限、证据与失败可见性。"}</p></div>
+      <div><span>{locale === "en" ? "ROLE" : "角色"}</span><p>{locale === "en" ? "Product owner, AI workflow designer, and full-stack engineering lead." : "产品负责人、AI workflow 设计者与全栈工程负责人。"}</p></div>
+      <div><span>{locale === "en" ? "OUTCOME" : "结果"}</span><p>{locale === "en" ? "A deployed local baseline with Ask, Compare, Troubleshoot, security, and versioned evaluation." : "完成 Ask、Compare、Troubleshoot、安全与版本化评估的本地部署基线。"}</p></div>
+    </section>
+    <VideoEmbed title={locale === "en" ? "Product walkthrough — video coming after recording" : "产品演示——录制完成后加入"} caption={locale === "en" ? "Watch walkthrough" : "观看演示"} />
+    <section class="outcome-band" aria-label="Measured outcomes">{copy.outcomes.map(([value,label]) => <div><strong>{value}</strong><span>{label}</span></div>)}</section>
+    {sections.map((section) => <section class="case-section" id={section.id}>
+      <div class="section-number">{section.label.slice(0,2)}</div>
+      <div><p class="eyebrow">{section.label}</p><h2>{section.title}</h2>
+        {section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+        <div class="evidence-block"><span>{locale === "en" ? "EVIDENCE & OUTPUT" : "证据与产出"}</span><ul>{section.evidence.map((item) => <li>{item}</li>)}</ul></div>
+        <div class="decision-grid"><aside class="decision"><span>{locale === "en" ? "PRODUCT DECISION" : "产品判断"}</span><p>{section.decision}</p></aside><aside class="tradeoff"><span>{locale === "en" ? "TRADE-OFF" : "取舍"}</span><p>{section.tradeoff}</p></aside></div>
+        {section.id === "workflow" && <div class="workflow"><span>Authenticated request</span><i>→</i><span>Authorized scope</span><i>→</i><span>Retrieval Tool</span><i>→</i><span>Evidence gate</span><i>→</i><span>Skill</span><i>→</i><span>Citation validation</span></div>}
+        {section.id === "evaluation" && <img class="case-image" src="/images/enterprise-agent/grounded-answer.png" alt={locale === "en" ? "Grounded answer with evidence" : "带证据的 grounded answer"} />}
+        {section.id === "bad-cases" && <div class="image-pair"><img src="/images/enterprise-agent/compare-result.png" alt={locale === "en" ? "Comparison result" : "比较结果"} /><img src="/images/enterprise-agent/compare-evidence.png" alt={locale === "en" ? "Independent comparison evidence" : "独立比较证据"} /></div>}
+        {section.id === "iteration" && <img class="case-image portrait" src="/images/enterprise-agent/troubleshooting.png" alt={locale === "en" ? "Read-only troubleshooting workflow" : "只读故障排查 workflow"} />}
+      </div>
+    </section>)}
+    <footer class="case-footer"><p>{locale === "en" ? "A working system, measured honestly—and a clear plan for what evidence comes next." : "一个真实可运行、诚实评估，并明确下一步证据需求的 AI 产品。"}</p><div class="actions"><a class="primary-link" href={projectHref}>← {locale === "en" ? "Back to projects" : "返回项目页面"}</a><a href="https://github.com/abigailmounind/enterprise-agent/tree/v1.0.0" target="_blank" rel="noreferrer">v1.0.0 ↗</a></div></footer>
+  </main>
+</div>

@@ -1,0 +1,55 @@
+---
+import Sidebar from "./Sidebar.astro";
+import Icon from "./Icon.astro";
+import ProjectCard from "./ProjectCard.astro";
+import { project, type Locale } from "../data/site";
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const copy = project[locale];
+const caseHref = locale === "en" ? "/projects/enterprise-engineering-copilot/" : "/zh/projects/enterprise-engineering-copilot/";
+function profileLabel(id: string) {
+  const labels: Record<string,string> = { experience: "经历", research: "研究与论文", skills: "能力" };
+  return labels[id] ?? id;
+}
+---
+<div class="site-shell">
+  <Sidebar locale={locale} />
+  <main class="main-column">
+    <section class="tab-panel active" id="panel-overview" role="tabpanel" data-tab-panel="overview">
+      <p class="eyebrow">{locale === "en" ? "PORTFOLIO / AI PRODUCT" : "个人作品集 / AI 产品"}</p>
+      <h1>{locale === "en" ? <>From an AI opportunity<br />to a product you can defend.</> : <>从 AI 机会<br />到经得起追问的产品。</>}</h1>
+      <p class="lede">{locale === "en" ? "My work connects product definition, AI feasibility, workflow design, engineering delivery, evaluation, bad-case analysis, iteration, cost, and business value." : "我的工作将产品定义、AI 可行性、workflow 设计、工程交付、evaluation、bad-case 分析、迭代、成本与商业价值连成完整闭环。"}</p>
+      <div class="principles">
+        <article><span>01</span><h2>{locale === "en" ? "Evidence before claims" : "证据先于结论"}</h2><p>{locale === "en" ? "Measured results, hypotheses, and limitations stay visibly distinct." : "实测结果、产品假设和限制始终明确区分。"}</p></article>
+        <article><span>02</span><h2>{locale === "en" ? "Complexity must earn its place" : "复杂度必须有理由"}</h2><p>{locale === "en" ? "Models, agents, tools, and infrastructure enter only when they solve a concrete problem." : "模型、Agent、Tools 和基础设施只有在解决具体问题时才进入产品。"}</p></article>
+      </div>
+    </section>
+    <section class="tab-panel" id="panel-projects" role="tabpanel" data-tab-panel="projects" hidden>
+      <p class="eyebrow">{copy.eyebrow}</p><h1>{copy.title}</h1><p class="lede">{copy.summary}</p>
+      <div class="paper-actions"><a href={caseHref}><Icon name="document" />{copy.actions.caseStudy}</a><a href="https://github.com/abigailmounind/enterprise-agent" target="_blank" rel="noreferrer"><Icon name="github" />{copy.actions.github}</a></div>
+      <div class="project-visual"><img src="/images/enterprise-agent/workspace.png" alt={locale === "en" ? "Enterprise Engineering Copilot workspace" : "Enterprise Engineering Copilot 工作台"} /></div>
+      <div class="metric-grid">{copy.outcomes.map(([value,label]) => <div><strong>{value}</strong><span>{label}</span></div>)}</div>
+      <section class="project-index-section"><p class="eyebrow">{locale === "en" ? "PROJECT INDEX" : "项目索引"}</p><ProjectCard index="01" title={copy.title} description={copy.summary} meta={locale === "en" ? "AI PRODUCT · RAG · AGENT WORKFLOW · EVALUATION" : "AI 产品 · RAG · AGENT WORKFLOW · EVALUATION"} href={caseHref} action={locale === "en" ? "Case study" : "查看案例"} /></section>
+    </section>
+    {(["experience","research","skills"] as const).map((id) => <section class="tab-panel pending-panel" id={`panel-${id}`} role="tabpanel" data-tab-panel={id} hidden><p class="eyebrow">{locale === "en" ? id.toUpperCase() : profileLabel(id)}</p><h1>{locale === "en" ? "Verified content, not placeholders." : "只展示经过确认的真实内容。"}</h1><p class="lede">{locale === "en" ? "This section is structurally ready and will be published after the corresponding resume and publication evidence is supplied." : "该模块结构已经准备好，将在提供对应简历与论文证据后发布。"}</p></section>)}
+  </main>
+</div>
+<script>
+  const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-tab-target]"));
+  const panels = Array.from(document.querySelectorAll<HTMLElement>("[data-tab-panel]"));
+  const select = (id: string, updateHash = true) => {
+    tabs.forEach((tab) => { const selected = tab.dataset.tabTarget === id; tab.classList.toggle("active", selected); tab.setAttribute("aria-selected", String(selected)); tab.tabIndex = selected ? 0 : -1; });
+    panels.forEach((panel) => { const selected = panel.dataset.tabPanel === id; panel.hidden = !selected; panel.classList.toggle("active", selected); });
+    if (updateHash) history.replaceState(null, "", `#${id}`);
+  };
+  tabs.forEach((tab) => tab.addEventListener("click", () => select(tab.dataset.tabTarget ?? "overview")));
+  tabs.forEach((tab, index) => tab.addEventListener("keydown", (event) => {
+    if (event.key !== "ArrowUp" && event.key !== "ArrowDown") return;
+    event.preventDefault();
+    const offset = event.key === "ArrowDown" ? 1 : -1;
+    const next = tabs[(index + offset + tabs.length) % tabs.length];
+    next?.focus();
+    select(next?.dataset.tabTarget ?? "overview");
+  }));
+  const initial = location.hash.slice(1); if (tabs.some((tab) => tab.dataset.tabTarget === initial)) select(initial, false);
+</script>

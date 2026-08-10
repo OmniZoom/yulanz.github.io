@@ -1,0 +1,10 @@
+---
+import Icon from "./Icon.astro";
+interface Props { index: string; title: string; description: string; meta: string; href: string; action: string; }
+const { index, title, description, meta, href, action } = Astro.props;
+---
+<article class="project-card">
+  <span class="project-index">{index}</span>
+  <div><p class="project-meta">{meta}</p><h3>{title}</h3><p>{description}</p></div>
+  <a href={href} aria-label={`${action}: ${title}`}><Icon name="document" size={17} />{action}<span aria-hidden="true">→</span></a>
+</article>

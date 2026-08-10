@@ -1,0 +1,33 @@
+---
+import { profile, type Locale } from "../data/site";
+interface Props { locale: Locale; mode?: "home" | "case"; active?: string; }
+const { locale, mode = "home", active = "overview" } = Astro.props;
+const copy = profile[locale];
+const otherHref = locale === "en"
+  ? (mode === "home" ? "/zh/" : "/zh/projects/enterprise-engineering-copilot/")
+  : (mode === "home" ? "/" : "/projects/enterprise-engineering-copilot/");
+const homeHref = locale === "en" ? "/" : "/zh/";
+const caseNav = locale === "en"
+  ? [["problem","Problem"],["research","Research"],["product","Product"],["prd","PRD"],["feasibility","Feasibility"],["workflow","Workflow"],["engineering","Engineering"],["evaluation","Evaluation"],["bad-cases","Bad cases"],["analysis","Analysis"],["iteration","Iteration"],["cost","Cost"],["value","Business value"]]
+  : [["problem","问题"],["research","研究边界"],["product","产品"],["prd","PRD"],["feasibility","可行性"],["workflow","Workflow"],["engineering","工程"],["evaluation","Evaluation"],["bad-cases","Bad cases"],["analysis","数据分析"],["iteration","迭代"],["cost","成本"],["value","商业价值"]];
+---
+<aside class="sidebar">
+  <div class="identity">
+    <a class="monogram" href={homeHref} aria-label="Home">AM</a>
+    <div><a class="name" href={homeHref}>{copy.name}</a><p class="role">{copy.role}</p></div>
+    <p class="statement">{copy.statement}</p>
+    <p class="meta">{copy.location}</p>
+  </div>
+  <nav class="side-tabs" aria-label={mode === "home" ? "Portfolio sections" : "Case study sections"} role={mode === "home" ? "tablist" : undefined}>
+    {mode === "home" ? copy.nav.map(([id, label]) => (
+      <button class:list={["side-tab", { active: id === active }]} type="button" role="tab" data-tab-target={id} aria-controls={`panel-${id}`} aria-selected={id === active}>{label}</button>
+    )) : caseNav.map(([id, label]) => <a class="side-tab" href={`#${id}`}>{label}</a>)}
+  </nav>
+  <div class="sidebar-links">
+    {mode === "case" && <a href={`${homeHref}#projects`}>← {locale === "en" ? "Back to projects" : "返回项目页面"}</a>}
+    <a href="https://github.com/abigailmounind" rel="me">GitHub ↗</a>
+    <span class="muted-link" aria-disabled="true">{copy.resume} · {locale === "en" ? "coming soon" : "待补充"}</span>
+    <span class="muted-link" aria-disabled="true">{copy.contact} · {locale === "en" ? "coming soon" : "待补充"}</span>
+    <a href={otherHref} lang={locale === "en" ? "zh-CN" : "en"}>{copy.language}</a>
+  </div>
+</aside>
