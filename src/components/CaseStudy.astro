@@ -2,41 +2,62 @@
 import Sidebar from "./Sidebar.astro";
 import Icon from "./Icon.astro";
 import VideoEmbed from "./VideoEmbed.astro";
+import PrdSection from "./PrdSection.astro";
+import FeasibilitySection from "./FeasibilitySection.astro";
+import WorkflowSection from "./WorkflowSection.astro";
+import EngineeringSection from "./EngineeringSection.astro";
+import EvaluationSection from "./EvaluationSection.astro";
+import IterationSection from "./IterationSection.astro";
+import CostSection from "./CostSection.astro";
+import ValueRoadmapSection from "./ValueRoadmapSection.astro";
 import { caseStudy } from "../data/case-study";
 import { project, type Locale } from "../data/site";
 interface Props { locale: Locale; }
 const { locale } = Astro.props;
 const copy = project[locale];
-const sections = caseStudy[locale];
-const projectHref = locale === "en" ? "/#projects" : "/zh/#projects";
+const asset = (path: string) => `${import.meta.env.BASE_URL.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
+const sections = caseStudy[locale].filter((section) => !["bad-cases", "analysis"].includes(section.id));
+const sectionLabel = (section: (typeof sections)[number]) => {
+  const number = { iteration: "09", cost: "10", value: "11" }[section.id];
+  return number ? section.label.replace(/^\d+/, number) : section.label;
+};
+const projectHref = asset(locale === "en" ? "/#projects" : "/zh/#projects");
+const videoHref = "https://www.bilibili.com/video/BV1vZb16wEEU/";
 ---
 <div class="site-shell case-shell"><Sidebar locale={locale} mode="case" />
   <main class="main-column case-study">
     <header class="case-hero">
-      <p class="eyebrow">{copy.eyebrow}</p><h1>{copy.title}</h1><p class="lede">{copy.summary}</p>
-      <div class="paper-actions"><a href="#problem"><Icon name="document" />{locale === "en" ? "Read the full case" : "阅读完整案例"}</a><a href="https://github.com/abigailmounind/enterprise-agent" target="_blank" rel="noreferrer"><Icon name="github" />{copy.actions.github}</a></div>
+      <h1>{copy.title}</h1><p class="lede">{copy.summary}</p>
+      <div class="paper-actions"><a href="#problem"><Icon name="document" />{locale === "en" ? "Read the full case" : "阅读完整案例"}</a><a href="https://github.com/abigailmounind/enterprise-agent" target="_blank" rel="noreferrer"><Icon name="github" />{copy.actions.github}</a><a href={videoHref} target="_blank" rel="noreferrer"><Icon name="play" />{copy.actions.video}</a></div>
       <div class="case-meta"><span>{copy.status}</span><span>2026</span><span>Product · AI · Engineering</span></div>
-      <img src="/images/enterprise-agent/workspace.png" alt={locale === "en" ? "Enterprise Engineering Copilot workspace" : "Enterprise Engineering Copilot 工作台"} />
     </header>
     <section class="case-summary" aria-label={locale === "en" ? "Case overview" : "案例概览"}>
       <div><span>{locale === "en" ? "PROBLEM" : "问题"}</span><p>{locale === "en" ? "Engineers need fast answers without losing authorization, evidence, or failure visibility." : "工程师需要快速获得答案，但不能牺牲权限、证据与失败可见性。"}</p></div>
       <div><span>{locale === "en" ? "ROLE" : "角色"}</span><p>{locale === "en" ? "Product owner, AI workflow designer, and full-stack engineering lead." : "产品负责人、AI workflow 设计者与全栈工程负责人。"}</p></div>
       <div><span>{locale === "en" ? "OUTCOME" : "结果"}</span><p>{locale === "en" ? "A deployed local baseline with Ask, Compare, Troubleshoot, security, and versioned evaluation." : "完成 Ask、Compare、Troubleshoot、安全与版本化评估的本地部署基线。"}</p></div>
     </section>
-    <VideoEmbed title={locale === "en" ? "Product walkthrough — video coming after recording" : "产品演示——录制完成后加入"} caption={locale === "en" ? "Watch walkthrough" : "观看演示"} />
+    <VideoEmbed title={locale === "en" ? "Enterprise Engineering Copilot — Video Demo" : "Enterprise Engineering Copilot——视频演示"} providerUrl={videoHref} poster={asset("/images/enterprise-agent/workspace.png")} caption={locale === "en" ? "Watch Video Demo" : "观看视频演示"} />
     <section class="outcome-band" aria-label="Measured outcomes">{copy.outcomes.map(([value,label]) => <div><strong>{value}</strong><span>{label}</span></div>)}</section>
     {sections.map((section) => <section class="case-section" id={section.id}>
-      <div class="section-number">{section.label.slice(0,2)}</div>
-      <div><p class="eyebrow">{section.label}</p><h2>{section.title}</h2>
-        {section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
-        <div class="evidence-block"><span>{locale === "en" ? "EVIDENCE & OUTPUT" : "证据与产出"}</span><ul>{section.evidence.map((item) => <li>{item}</li>)}</ul></div>
-        <div class="decision-grid"><aside class="decision"><span>{locale === "en" ? "PRODUCT DECISION" : "产品判断"}</span><p>{section.decision}</p></aside><aside class="tradeoff"><span>{locale === "en" ? "TRADE-OFF" : "取舍"}</span><p>{section.tradeoff}</p></aside></div>
-        {section.id === "workflow" && <div class="workflow"><span>Authenticated request</span><i>→</i><span>Authorized scope</span><i>→</i><span>Retrieval Tool</span><i>→</i><span>Evidence gate</span><i>→</i><span>Skill</span><i>→</i><span>Citation validation</span></div>}
-        {section.id === "evaluation" && <img class="case-image" src="/images/enterprise-agent/grounded-answer.png" alt={locale === "en" ? "Grounded answer with evidence" : "带证据的 grounded answer"} />}
-        {section.id === "bad-cases" && <div class="image-pair"><img src="/images/enterprise-agent/compare-result.png" alt={locale === "en" ? "Comparison result" : "比较结果"} /><img src="/images/enterprise-agent/compare-evidence.png" alt={locale === "en" ? "Independent comparison evidence" : "独立比较证据"} /></div>}
-        {section.id === "iteration" && <img class="case-image portrait" src="/images/enterprise-agent/troubleshooting.png" alt={locale === "en" ? "Read-only troubleshooting workflow" : "只读故障排查 workflow"} />}
+      <div><h2 class="case-section-label">{section.id === "value" ? (locale === "en" ? "11 · Business Value & Future Roadmap" : "11 · 商业价值与未来路线图") : sectionLabel(section)}</h2>
+        {!['engineering','evaluation','iteration','cost','value'].includes(section.id) && <p class="case-section-summary">{section.title}</p>}
+        {!['engineering','evaluation','iteration','cost','value'].includes(section.id) && section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+        {section.id === "prd" && <PrdSection locale={locale} />}
+        {section.id === "feasibility" && <FeasibilitySection locale={locale} />}
+        {section.id === "workflow" && <WorkflowSection locale={locale} />}
+        {section.id === "engineering" && <EngineeringSection locale={locale} />}
+        {section.id === "evaluation" && <EvaluationSection locale={locale} />}
+        {section.id === "iteration" && <IterationSection locale={locale} />}
+        {section.id === "cost" && <CostSection locale={locale} />}
+        {section.id === "value" && <ValueRoadmapSection locale={locale} />}
+        {section.blocks?.map((block, blockIndex) => <div class:list={["narrative-block", `narrative-block-${blockIndex + 1}`]}>
+          <div class="narrative-heading"><span>{String.fromCharCode(65 + blockIndex)}</span><div><h3>{block.title}</h3>{block.description && <p>{block.description}</p>}</div></div>
+          <div class="narrative-items">{block.items.map((item) => <article><h4>{item.title.replace(/^\d+\s*·\s*/, "")}</h4><p>{item.text}</p></article>)}</div>
+        </div>)}
+        {!['prd','feasibility','workflow','engineering','evaluation','iteration','cost','value'].includes(section.id) && section.evidence.length > 0 && <div class="evidence-block"><span>{locale === "en" ? "EVIDENCE & OUTPUT" : "证据与产出"}</span><ul>{section.evidence.map((item) => <li>{item}</li>)}</ul></div>}
+        {!['prd','feasibility','workflow','engineering','evaluation','iteration','cost','value'].includes(section.id) && <div class="decision-grid"><aside class="decision"><span>{locale === "en" ? "PRODUCT DECISION" : "产品判断"}</span><p>{section.decision}</p></aside><aside class="tradeoff"><span>{locale === "en" ? "TRADE-OFF" : "取舍"}</span><p>{section.tradeoff}</p></aside></div>}
       </div>
     </section>)}
-    <footer class="case-footer"><p>{locale === "en" ? "A working system, measured honestly—and a clear plan for what evidence comes next." : "一个真实可运行、诚实评估，并明确下一步证据需求的 AI 产品。"}</p><div class="actions"><a class="primary-link" href={projectHref}>← {locale === "en" ? "Back to projects" : "返回项目页面"}</a><a href="https://github.com/abigailmounind/enterprise-agent/tree/v1.0.0" target="_blank" rel="noreferrer">v1.0.0 ↗</a></div></footer>
+    <footer class="case-footer"><div class="actions"><a class="primary-link" href={projectHref}>← {locale === "en" ? "Back to projects" : "返回项目页面"}</a><a href="https://github.com/abigailmounind/enterprise-agent/tree/v1.0.0" target="_blank" rel="noreferrer">v1.0.0 ↗</a></div></footer>
   </main>
 </div>

@@ -1,0 +1,44 @@
+---
+import type { Locale } from "../data/site";
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const zh = locale === "zh";
+const mainFlow = zh ? [
+  ["用户请求",""],["认证与授权","Deterministic"],["任务分类","LLM · typed contract"],["选择 Skill","Objective · rules · format"],["执行 Tool","Context · retry · timeout"],["Evidence Gate","Sufficiency · budget"],["Grounded Generation","LLM"],["引用校验","Application logic"],["Trace 与 Evaluation","Terminal status"]
+] : [
+  ["User Request",""],["Authentication & Authorization","Deterministic"],["Task Classification","LLM · typed contract"],["Skill Selection","Objective · rules · format"],["Tool Execution","Context · retry · timeout"],["Evidence Gate","Sufficiency · budget"],["Grounded Generation","LLM"],["Citation Validation","Application logic"],["Trace & Evaluation","Terminal status"]
+];
+const skills = zh ? [
+  {name:"Search Skill",use:"工程知识问答",steps:["Question","Retrieval Tool","Evidence Filtering","Grounded Answer"],note:"以引用支持答案；证据不足时拒答。"},
+  {name:"Compare Skill",use:"技术方案比较",steps:["Target Extraction","Left / Right Independent Retrieval","Difference Extraction","Citation Validation"],note:"两侧证据独立，防止跨目标引用。"},
+  {name:"Troubleshooting Skill",use:"故障诊断",steps:["Issue Description","Runbook Retrieval","Diagnostic Steps","Recovery Recommendation","Evidence Check"],note:"只读：提供诊断与恢复建议，不执行生产操作。"},
+] : [
+  {name:"Search Skill",use:"Engineering knowledge Q&A",steps:["Question","Retrieval Tool","Evidence Filtering","Grounded Answer"],note:"Cite the answer; refuse when evidence is insufficient."},
+  {name:"Compare Skill",use:"Technical option comparison",steps:["Target Extraction","Left / Right Independent Retrieval","Difference Extraction","Citation Validation"],note:"Keep evidence independent to prevent cross-target citations."},
+  {name:"Troubleshooting Skill",use:"Fault diagnosis",steps:["Issue Description","Runbook Retrieval","Diagnostic Steps","Recovery Recommendation","Evidence Check"],note:"Read-only: recommend diagnosis and recovery; never execute production actions."},
+];
+---
+<div class="workflow-story">
+  <section class="agent-main-flow">
+    <p class="story-kicker">A · {zh ? "受约束的 Agent 主流程" : "Constrained Agent Workflow"}</p>
+    <p class="story-caption">{zh ? "每个用户请求都经过授权、任务路由、证据门槛和引用校验；模型无法绕过这些控制点。" : "Every request passes authorization, task routing, an evidence gate, and citation validation; the model cannot bypass these controls."}</p>
+    <div class="agent-flow">{mainFlow.map(([title,meta],i) => <><div class:list={[i===0&&"user-node",[2,6].includes(i)&&"llm-node",[4].includes(i)&&"tool-node",[5,7,8].includes(i)&&"control-node"]}><span>{String(i+1).padStart(2,"0")}</span><strong>{title}</strong>{meta&&<small>{meta}</small>}</div>{i + 1 !== mainFlow.length && <i>↓</i>}</>)}</div>
+  </section>
+
+  <section class="skill-definition">
+    <p class="story-kicker">B · {zh ? "Skill 抽象" : "Skill Abstraction"}</p>
+    <div class="skill-equation"><strong>Skill</strong><span>=</span><div>{zh ? "任务目标" : "Task objective"}</div><b>+</b><div>{zh ? "工具选择" : "Tool selection"}</div><b>+</b><div>{zh ? "验证规则" : "Validation rules"}</div><b>+</b><div>{zh ? "输出格式" : "Output format"}</div></div>
+    <p class="skill-definition-copy">{zh ? "Skill 不是一个 prompt，而是面向具体工程任务、可复用且可验收的 workflow capability。" : "A Skill is not a prompt. It is a reusable, testable workflow capability for a specific engineering task."}</p>
+  </section>
+
+  <section class="skill-workflows">
+    <p class="story-kicker">C · {zh ? "三个同级任务 Skill" : "Three Peer Task Skills"}</p>
+    {skills.map(skill => <article class="skill-lane">
+      <header><div><h3>{skill.name}</h3><p>{skill.use}</p></div></header>
+      <div class="skill-steps">{skill.steps.map((step,i)=><><div>{step}</div>{i + 1 !== skill.steps.length && <i>→</i>}</>)}</div>
+      <footer>{skill.note}</footer>
+    </article>)}
+  </section>
+
+  <p class="workflow-boundary-note">{zh ? "LLM 负责理解与生成；权限、证据门槛、预算、工具执行和终态由应用控制。" : "The LLM handles understanding and generation; the application governs permissions, evidence gates, budgets, tool execution, and terminal states."}</p>
+</div>

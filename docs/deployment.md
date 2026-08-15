@@ -1,5 +1,5 @@
 # Deployment
 
-The site is a static Astro build intended for the `abigailmounind.github.io` GitHub Pages
-repository. GitHub Pages activation and remote repository creation remain owner-controlled
-external actions.
+The site is a static Astro build published from the
+`OmniZoom/yulanz.github.io` repository with GitHub Actions. Its public URL is
+`https://omnizoom.github.io/yulanz.github.io/`.

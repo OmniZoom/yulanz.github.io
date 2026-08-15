@@ -1,0 +1,32 @@
+---
+import type { Locale } from "../data/site";
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const zh = locale === "zh";
+const loop = zh ? ["Initial Product", "Evaluation Result", "Problem Discovery", "Improvement Decision", "Implementation", "Validation", "Next Iteration"] : ["Initial Product", "Evaluation Result", "Problem Discovery", "Improvement Decision", "Implementation", "Validation", "Next Iteration"];
+const iterations = zh ? [
+  { label:"Retrieval quality", problem:"Dense retrieval 对精确标识符与不同查询类型的表现不一致。", evidence:"版本化 retrieval evaluation 与查询类别切片。", change:"引入 Hybrid Retrieval，并将 reranking 保持为可选增强。", impact:"候选覆盖保持稳定；排序增强只在质量收益值得延迟时启用。" },
+  { label:"Task-specific workflows", problem:"Ask、Compare、Troubleshoot 的输入、证据结构与失败条件不同。", evidence:"Compare cross-target citation 与 Troubleshooting safety requirements。", change:"引入 typed Tools、Skill abstraction 与独立 evidence paths。", impact:"任务合同、来源归属、安全边界与终态更加明确。" },
+  { label:"Runtime reliability", problem:"Provider failure、重试、超时和多步骤执行需要受控。", evidence:"Failure cases、Recorded Run A/B 与 runtime policy tests。", change:"加入 Evidence Gate、bounded retry、timeout、budget 与 trace。", impact:"外部失败仍可能发生，但被限制为可观察的 typed outcome。" },
+] : [
+  { label:"Retrieval quality", problem:"Dense retrieval behaved unevenly across exact identifiers and query types.", evidence:"Versioned retrieval evaluation and query-category slices.", change:"Add hybrid retrieval and keep reranking as an optional enhancement.", impact:"Candidate coverage remains stable; ranking enhancement is used only when quality earns the latency." },
+  { label:"Task-specific workflows", problem:"Ask, Compare, and Troubleshoot require different inputs, evidence structures, and failure rules.", evidence:"Cross-target Compare citations and Troubleshooting safety requirements.", change:"Introduce typed Tools, Skill abstractions, and independent evidence paths.", impact:"Task contracts, provenance, safety boundaries, and terminal states become explicit." },
+  { label:"Runtime reliability", problem:"Provider failure, retry, timeout, and multi-step execution require control.", evidence:"Failure cases, Recorded Runs A/B, and runtime policy tests.", change:"Add an Evidence Gate, bounded retry, timeout, budgets, and trace collection.", impact:"External failures can still occur, but remain contained as observable typed outcomes." },
+];
+---
+
+<div class="iteration-story">
+  <section>
+    <p class="story-kicker">A · Product Iteration Loop</p>
+    <p class="story-caption">{zh ? "产品通过观测、改进与回归验证持续演进。" : "The product evolves through observation, bounded change, and regression validation."}</p>
+    <div class="iteration-loop">{loop.map((step, index) => <><div><span>{step}</span></div>{index < loop.length - 1 && <i>→</i>}</>)}</div>
+  </section>
+  <section>
+    <p class="story-kicker">B · Iteration Timeline</p>
+    <div class="iteration-timeline">{iterations.map((iteration, index) => <article><div class="iteration-marker"><span>{String.fromCharCode(65 + index)}</span></div><header><small>ITERATION</small><h3>{iteration.label}</h3></header><div class="iteration-evidence"><div><span>Problem</span><p>{iteration.problem}</p></div><div><span>Evidence</span><p>{iteration.evidence}</p></div><div><span>Change</span><p>{iteration.change}</p></div><div><span>Impact</span><p>{iteration.impact}</p></div></div></article>)}</div>
+  </section>
+  <section>
+    <p class="story-kicker">C · {zh ? "验证闭环" : "Validation Loop"}</p>
+    <div class="validation-loop"><span>Observed Failure</span><i>→</i><span>Root Cause</span><i>→</i><span>Bounded Change</span><i>→</i><span>Regression Case</span><i>→</i><span>Versioned Evaluation</span></div>
+  </section>
+</div>

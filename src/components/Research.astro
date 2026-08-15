@@ -1,0 +1,36 @@
+---
+import { research } from "../data/profile-content";
+import type { Locale } from "../data/site";
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const copy = research[locale];
+const paper = copy.paper;
+const pdfLabel = locale === "en" ? "Open original PDF" : "打开原始 PDF";
+const asset = (path: string) => `${import.meta.env.BASE_URL.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
+function rank(values: readonly string[], index: number) {
+  const ordered = [...new Set(values.map((value) => Number.parseFloat(value)))].sort((a, b) => b - a);
+  const current = Number.parseFloat(values[index] ?? "0");
+  return current === ordered[0] ? "best" : current === ordered[1] ? "second" : undefined;
+}
+---
+<header class="page-heading section-heading">
+  <h1>{copy.title}</h1>
+</header>
+<article class="research-paper">
+  <header class="paper-heading"><span class="status-pill">{paper.status}</span><h2>{paper.title}</h2><p class="paper-authors">{paper.authors}</p><p class="paper-note">{paper.note}</p></header>
+  <section class="research-block abstract-block"><p class="section-label">{paper.abstractTitle}</p><p>{paper.abstract}</p></section>
+  <section class="research-block method-block"><p class="section-label">{paper.methodTitle}</p>{paper.method.map((paragraph) => <p>{paragraph}</p>)}</section>
+  <figure class="research-figure pipeline-figure"><figcaption><strong>{paper.methodTitle}</strong><span>{paper.pipelineCaption}</span></figcaption><img src={asset("/images/research/st-har/pipeline-cropped.png")} alt={paper.pipelineCaption} width="1981" height="854" loading="lazy" /><a class="pdf-link" href={asset("/images/research/st-har/pipeline.pdf")} target="_blank">{pdfLabel} ↗</a></figure>
+  <section class="research-block results-block"><p class="section-label">{paper.resultsTitle}</p><p>{paper.resultsSummary}</p></section>
+  <section class="research-table-section"><header><h3>{paper.comparisonTitle}</h3><p>{paper.comparisonCaption}</p></header>
+    <div class="results-table-wrap comparison-table"><table><thead><tr><th>Dataset</th><th>Metric</th>{paper.comparisonMethods.map((method) => <th>{method}</th>)}</tr></thead><tbody>{paper.comparisonRows.map((row, rowIndex) => <tr class:list={{ "dataset-start": rowIndex === 0 || paper.comparisonRows[rowIndex - 1]?.dataset !== row.dataset }}><th>{rowIndex === 0 || paper.comparisonRows[rowIndex - 1]?.dataset !== row.dataset ? row.dataset : ""}</th><th>{row.metric}</th>{row.values.map((value, index) => <td class={rank(row.values, index)}>{value}</td>)}</tr>)}</tbody><tfoot><tr><th colspan="2">Ranking Top</th><td class="best">15</td><td class="second">1</td>{paper.comparisonMethods.slice(2).map(() => <td>0</td>)}</tr></tfoot></table></div>
+  </section>
+  <section class="research-table-section"><header><h3>{paper.ablationTitle}</h3><p>{paper.ablationCaption}</p></header>
+    <div class="results-table-wrap ablation-table"><table><thead><tr><th>Dataset</th><th>Ours</th><th>w/o Lₜ</th><th>↓</th><th>w/o TG</th><th>↓</th><th>w/o RoPE</th><th>↓</th></tr></thead><tbody>{paper.ablationRows.map((row) => <tr><th>{row.dataset}</th>{row.values.map((value, index) => <td class:list={{ best: index === 0 }}>{value}</td>)}</tr>)}</tbody></table></div>
+  </section>
+  <section class="research-visuals"><h3>{paper.sensitivityTitle}</h3>
+    <figure class="research-figure sensitivity-figure"><figcaption><span>{paper.windowCaption}</span></figcaption><img src={asset("/images/research/st-har/SW_size_th-cropped.png")} alt={paper.windowCaption} width="2903" height="685" loading="lazy" /><a class="pdf-link" href={asset("/images/research/st-har/SW_size_th.pdf")} target="_blank">{pdfLabel} ↗</a></figure>
+    <figure class="research-figure sensitivity-figure"><figcaption><span>{paper.regularizerCaption}</span></figcaption><img src={asset("/images/research/st-har/fig_split_violin_temp-cropped.png")} alt={paper.regularizerCaption} width="2925" height="663" loading="lazy" /><a class="pdf-link" href={asset("/images/research/st-har/fig_split_violin_temp.pdf")} target="_blank">{pdfLabel} ↗</a></figure>
+  </section>
+  <section class="research-visuals"><h3>{paper.qualitativeTitle}</h3><figure class="research-figure"><figcaption><span>{paper.qualitativeCaption}</span></figcaption><img src={asset("/images/research/st-har/qualitative_4by4.png")} alt={paper.qualitativeCaption} loading="lazy" /></figure></section>
+</article>

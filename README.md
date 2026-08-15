@@ -1,8 +1,10 @@
-# Abigail Mounind — AI Product & Engineering Portfolio
+# Yulan Zeng / 曾钰岚 — Personal Website
 
-基于 Astro 构建的双语个人作品集。英文是默认主站，中文页面位于 `/zh/`。
+基于 Astro 构建的双语个人学术、AI 产品与工程网站。英文是默认主站，中文页面位于 `/zh/`。
 
-当前阶段只在本地维护，尚未创建 GitHub 远程仓库、提交 Git 历史或公开发布。等内容和视觉细节确认后，再发布到 `https://abigailmounind.github.io`。
+当前实现状态与下次续接说明见 `docs/progress.md`。
+
+网站通过 GitHub Pages 发布到 `https://omnizoom.github.io/yulanz.github.io/`。
 
 ## 项目位置
 
@@ -62,10 +64,21 @@ src/data/site.ts
 - 姓名和个人定位；
 - 左侧导航文字；
 - 英文/中文个人简介；
+- Overview 个人介绍与时间线；
 - Enterprise Engineering Copilot 简介；
 - 项目指标和 CTA 文案。
 
 英文内容在 `en` 下，中文内容在 `zh` 下。修改时应同步维护两个版本，避免浏览器自动翻译式文案。
+
+### Experience、Research 与 Skills
+
+修改：
+
+```text
+src/data/profile-content.ts
+```
+
+这里包含经过简历和研究材料验证的中英文经历、一作 ST-HAR 研究内容、结果表和能力证据。不要添加未经材料支持的经历、论文、指标或技能等级。
 
 ### Enterprise Engineering Copilot 完整案例
 
@@ -99,6 +112,9 @@ src/data/case-study.ts
 
 ```text
 src/components/Home.astro          首页和左侧 Tab 对应内容
+src/components/Experience.astro    详细经历与奖学金
+src/components/Research.astro      一作研究、原始图与结果
+src/components/Skills.astro        基于证据的能力分组
 src/components/CaseStudy.astro     完整案例的展示结构
 src/components/Sidebar.astro       左侧个人信息和导航
 src/components/ProjectCard.astro   可复用项目卡片
@@ -113,7 +129,7 @@ src/styles/global.css
 docs/design-system.md
 ```
 
-整体视觉使用暖白背景、深色正文和绿色强调色。英文自托管 Newsreader 与 Inter；中文使用系统宋体和无衬线字体 fallback。
+当前 Version 2 视觉使用接近白色的底色，并叠加低对比度的浅粉、浅蓝与浅薄荷绿色径向光晕。英文自托管 Newsreader 与 Inter；中文使用系统宋体和无衬线字体 fallback。
 
 ### 图片
 
@@ -208,20 +224,14 @@ git status --short
 └── .github/workflows/pages.yml
 ```
 
-## 以后公开发布
+## 公开发布
 
-项目已经包含 GitHub Pages workflow，但当前不要因为 workflow 存在就认为网站已经公开。
-
-最终发布前应：
+项目包含 GitHub Pages workflow。推送到 `main` 后会自动检查、构建并部署。发布前应：
 
 1. 完成视觉和文字 review；
 2. 补充真实简历、论文、Skills、联系方式和视频；
 3. 检查所有 GitHub、PDF 和外部链接；
 4. 再次执行 `npm run check` 和 `npm run build`；
 5. 检查是否包含个人隐私、secret 或本地路径；
-6. 创建 `abigailmounind.github.io` GitHub 仓库；
-7. 创建首次 commit 并推送 `main`；
-8. 在 GitHub 仓库设置中明确启用 GitHub Actions Pages；
-9. 验证公开 URL、移动端、中英文路由和缓存后的静态资源。
-
-公开发布、创建 commit 和推送都应单独确认后再执行。
+6. 推送 `main`；
+7. 验证公开 URL、移动端、中英文路由和缓存后的静态资源。

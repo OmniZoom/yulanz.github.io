@@ -1,0 +1,47 @@
+---
+import type { Locale } from "../data/site";
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const zh = locale === "zh";
+---
+<div class="feasibility-story">
+  <section class="feasibility-opportunity">
+    <p class="story-kicker">A · {zh ? "AI 机会判断" : "AI Opportunity"}</p>
+    <div class="opportunity-flow">
+      <div><span>PROBLEM</span><strong>{zh ? "搜索返回文档，而不是可信结论" : "Search returns documents, not trustworthy conclusions"}</strong></div><i>→</i>
+      <div><span>AI OPPORTUNITY</span><strong>{zh ? "理解自然语言问题，并基于组织知识综合答案" : "Understand natural-language questions and synthesize from organizational knowledge"}</strong></div><i>→</i>
+      <div><span>CONSTRAINT</span><strong>Evidence grounding · Citation · Refusal · Latency · Cost</strong></div>
+    </div>
+  </section>
+
+  <section class="capability-boundary">
+    <p class="story-kicker">B · {zh ? "AI 能力边界" : "AI Capability Boundary"}</p>
+    <p class="story-caption">{zh ? "模型只负责适合概率推理的环节；权限、证据门槛和最终校验由系统掌控。" : "The model handles probabilistic reasoning; the system owns permissions, evidence gates, and final validation."}</p>
+    <div class="boundary-flow">
+      <div class="human-step"><span>01</span><strong>{zh ? "用户问题" : "User Question"}</strong><small>{zh ? "自然语言任务" : "Natural-language task"}</small></div><i>↓</i>
+      <div class="model-step"><span>02 · LLM</span><strong>{zh ? "意图理解" : "Intent Understanding"}</strong><small>{zh ? "识别任务，不决定事实" : "Classify the task, not the facts"}</small></div><i>↓</i>
+      <div class="tool-step"><span>03 · RETRIEVAL SYSTEM</span><strong>{zh ? "证据检索" : "Evidence Retrieval"}</strong><small>{zh ? "在授权范围内取得真实资料" : "Fetch real sources inside the authorized scope"}</small></div><i>↓</i>
+      <div class="rule-step"><span>04 · RULES / EVALUATION</span><strong>{zh ? "证据验证" : "Evidence Validation"}</strong><small>{zh ? "决定是否允许生成" : "Decide whether generation is justified"}</small></div><i>↓</i>
+      <div class="model-step"><span>05 · LLM</span><strong>{zh ? "答案生成" : "Answer Generation"}</strong><small>{zh ? "只基于通过验证的上下文" : "Use only validated context"}</small></div><i>↓</i>
+      <div class="rule-step"><span>06 · APPLICATION LOGIC</span><strong>{zh ? "引用与拒答护栏" : "Citation + Refusal Guardrail"}</strong><small>{zh ? "解析引用，或返回明确拒答" : "Resolve citations or return an explicit refusal"}</small></div>
+    </div>
+  </section>
+
+  <section class="technical-validation">
+    <p class="story-kicker">C · {zh ? "技术验证" : "Technical Validation"}</p>
+    <div class="experiment-row">
+      <div class="experiment-index">EXPERIMENT 1</div><div><span>{zh ? "问题" : "Question"}</span><strong>{zh ? "检索能否找到相关工程证据？" : "Can retrieval find relevant engineering evidence?"}</strong></div><div><span>{zh ? "方法" : "Method"}</span><strong>Dense Retrieval baseline</strong></div><div><span>{zh ? "结果" : "Result"}</span><strong>Recall@1 0.6667 · Recall@5 1.00</strong></div><div><span>{zh ? "产品判断" : "Decision"}</span><strong>{zh ? "基础语义检索可行，但精确标识符场景仍需优化。" : "Semantic retrieval is viable, but exact identifiers still need improvement."}</strong></div>
+    </div>
+    <div class="experiment-row">
+      <div class="experiment-index">EXPERIMENT 2</div><div><span>{zh ? "问题" : "Question"}</span><strong>{zh ? "能否提高首位证据质量？" : "Can top-rank evidence quality improve?"}</strong></div><div><span>{zh ? "方法" : "Method"}</span><strong>Hybrid Retrieval + Reranking</strong></div><div><span>{zh ? "结果" : "Result"}</span><strong>Recall@1 0.90 → 0.9333</strong></div><div><span>{zh ? "取舍与判断" : "Trade-off & decision"}</span><strong>{zh ? "约增加 469 ms 中位延迟；只为高价值任务按需启用。" : "About 469 ms median latency added; enable only for high-value tasks."}</strong></div>
+    </div>
+  </section>
+
+  <section class="experiment-visuals">
+    <p class="story-kicker">D · {zh ? "质量、延迟与投入选择" : "Quality, Latency & Investment Choice"}</p>
+    <div class="experiment-charts">
+      <figure class="recall-chart"><figcaption><strong>Recall@1 improvement</strong><span>{zh ? "首位命中率" : "Top-rank recall"}</span></figcaption><div class="bar-row"><span>Dense baseline</span><div><i style="--bar:.6667"></i></div><b>0.6667</b></div><div class="bar-row"><span>Hybrid</span><div><i style="--bar:.90"></i></div><b>0.90</b></div><div class="bar-row selected"><span>+ Reranking</span><div><i style="--bar:.9333"></i></div><b>0.9333</b></div></figure>
+      <figure class="scatter-chart"><figcaption><strong>{zh ? "质量 vs 延迟" : "Quality vs latency"}</strong><span>{zh ? "更右意味着更慢" : "Further right means slower"}</span></figcaption><svg viewBox="0 0 420 230" role="img" aria-label={zh ? "检索质量与延迟散点图" : "Retrieval quality versus latency scatter plot"}><line x1="48" y1="190" x2="400" y2="190"/><line x1="48" y1="190" x2="48" y2="22"/><text x="327" y="218">Latency →</text><text x="12" y="28">Quality ↑</text><circle class="dense-dot" cx="92" cy="146" r="8"/><text x="72" y="132">Dense</text><circle class="hybrid-dot" cx="176" cy="78" r="9"/><text x="148" y="61">Hybrid</text><circle class="rerank-dot" cx="346" cy="60" r="11"/><text x="296" y="41">Reranking</text><path d="M190 76 C245 70 286 64 330 61" class="diminishing"/><text x="220" y="103">{zh ? "边际收益变小" : "Diminishing gain"}</text></svg><p>{zh ? "选择点：Hybrid 作为默认；Reranking 保持可选。" : "Choice: Hybrid by default; reranking stays optional."}</p></figure>
+    </div>
+  </section>
+</div>

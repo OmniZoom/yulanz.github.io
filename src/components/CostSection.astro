@@ -1,0 +1,47 @@
+---
+import type { Locale } from "../data/site";
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const zh = locale === "zh";
+const drivers = zh ? [
+  ["Embedding", "文档量与重新索引频率", "Local BGE embedding 降低持续 API dependency"],
+  ["Retrieval", "Chunk 数量与 candidate size", "PostgreSQL canonical state + 可重建 Qdrant index"],
+  ["Generation", "Context 与 output tokens", "Evidence budget、结构化 context 与 output budget"],
+  ["Compare", "两个目标的独立 evidence path", "每个目标限制 evidence 数量与单次输出"],
+  ["Retry", "Provider transport failure", "Bounded retry、timeout 与 typed failure"],
+  ["Storage", "文档、chunk 与 metadata", "生命周期管理与可重建 retrieval representation"],
+] : [
+  ["Embedding", "Document volume and re-index frequency", "Local BGE embeddings reduce recurring API dependence"],
+  ["Retrieval", "Chunk count and candidate size", "PostgreSQL canonical state plus a rebuildable Qdrant index"],
+  ["Generation", "Context and output tokens", "Evidence, structured-context, and output budgets"],
+  ["Compare", "Independent evidence paths for two targets", "Limit evidence per target and per-call output"],
+  ["Retry", "Provider transport failure", "Bounded retry, timeout, and typed failure"],
+  ["Storage", "Documents, chunks, and metadata", "Lifecycle management and rebuildable retrieval representations"],
+];
+---
+
+<div class="cost-story">
+  <section>
+    <p class="story-kicker">A · Cost Model Overview</p>
+    <p class="cost-formula"><strong>Total Product Cost</strong><span>=</span> Infrastructure <b>+</b> Embedding / Indexing <b>+</b> LLM Inference <b>+</b> Retry / Failure <b>+</b> Storage</p>
+  </section>
+  <section>
+    <p class="story-kicker">B · Cost Drivers</p>
+    <p class="story-caption">{zh ? "成本由工作负载、执行路径与资源使用量共同决定。" : "Cost follows workload, execution paths, and resource consumption."}</p>
+    <div class="cost-table"><div><span>Component</span><span>Cost Driver</span><span>Optimization Strategy</span></div>{drivers.map((row) => <div>{row.map((cell) => <span>{cell}</span>)}</div>)}</div>
+  </section>
+  <section>
+    <p class="story-kicker">C · Recorded Consumption</p>
+    <div class="consumption-grid"><article><span>EARLY ANSWER RUN</span><strong>12</strong><small>queries</small><dl><div><dt>Input</dt><dd>4,210 tokens</dd></div><div><dt>Output</dt><dd>468 tokens</dd></div></dl></article><article><span>UNIFIED RUN A</span><strong>57</strong><small>cases</small><dl><div><dt>Input</dt><dd>6,967 tokens</dd></div><div><dt>Output</dt><dd>2,145 tokens</dd></div></dl></article><article><span>UNIFIED RUN B</span><strong>57</strong><small>cases</small><dl><div><dt>Input</dt><dd>6,299 tokens</dd></div><div><dt>Output</dt><dd>1,856 tokens</dd></div></dl></article></div>
+    <p class="data-scope-note">{zh ? "Unified suite 中，retrieval 与 insufficient-evidence case 可能在生成前结束；token 数据仅覆盖实际 provider usage。" : "Retrieval and insufficient-evidence cases may finish before generation; token data covers actual provider usage only."}</p>
+  </section>
+  <section>
+    <p class="story-kicker">D · {zh ? "成本路径" : "Cost Paths"}</p>
+    <div class="cost-paths"><article><span>Document ingestion</span><p>Local embedding <i>→</i> Local index</p></article><article><span>Supported task</span><p>Retrieval <i>→</i> Context <i>→</i> LLM generation</p></article><article><span>Unsupported task</span><p>Retrieval <i>→</i> Evidence Gate <i>→</i> Stop</p></article><article><span>Provider failure</span><p>Call <i>→</i> Bounded retry <i>→</i> Typed failure</p></article></div>
+  </section>
+  <section>
+    <p class="story-kicker">E · Cost Optimization Loop</p>
+    <div class="optimization-loop"><span>Measure Usage</span><i>→</i><span>Identify Driver</span><i>→</i><span>Apply Bounded Optimization</span><i>→</i><span>Re-run Quality Evaluation</span></div>
+    <div class="optimization-tags"><span>Local embedding</span><span>Evidence Gate</span><span>Context budget</span><span>Output budget</span><span>Optional reranking</span><span>Bounded retry</span></div>
+  </section>
+</div>

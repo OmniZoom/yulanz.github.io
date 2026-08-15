@@ -1,0 +1,63 @@
+---
+import type { Locale } from "../data/site";
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const zh = locale === "zh";
+const rawTabs = [
+  { id: "ask", label: "Ask", image: "/images/enterprise-agent/grounded-answer.png", alt: zh ? "带行内引用和可展开证据的工程问答界面" : "Engineering Q&A with inline citations and expandable evidence", title: zh ? "Evidence-based Engineering Q&A" : "Evidence-based Engineering Q&A", copy: zh ? "工程问题进入授权检索范围；答案保留行内引用，并允许用户回到文档原文。" : "An engineering question stays inside its authorized scope; the answer preserves inline citations and inspectable source text." },
+  { id: "compare", label: "Compare", image: "/images/enterprise-agent/compare-result.png", secondary: "/images/enterprise-agent/compare-evidence.png", alt: zh ? "保留左右独立来源的技术比较界面" : "Technical comparison with independent sources for each target", title: zh ? "Technical Decision Support" : "Technical Decision Support", copy: zh ? "两个目标分别检索，再生成 Differences、Left Only 和 Right Only；来源归属不会跨目标混用。" : "Each target is retrieved independently before producing Differences, Left Only, and Right Only without crossing provenance." },
+  { id: "troubleshoot", label: "Troubleshoot", image: "/images/enterprise-agent/troubleshooting.png", alt: zh ? "包含诊断步骤、恢复建议与 Runbook 证据的只读排障界面" : "Read-only troubleshooting with diagnostic steps, recovery guidance, and Runbook evidence", title: zh ? "Read-only Troubleshooting" : "Read-only Troubleshooting", copy: zh ? "结果区分诊断检查、恢复建议、升级条件与警告；引用 Runbook，但不执行生产操作。" : "The result separates diagnostic checks, recovery guidance, escalation, and warnings; it cites the Runbook but executes no production action." },
+];
+const asset = (path: string) => `${import.meta.env.BASE_URL.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
+const tabs = rawTabs.map((tab) => ({
+  ...tab,
+  image: asset(tab.image),
+  secondary: "secondary" in tab && tab.secondary ? asset(tab.secondary) : undefined,
+}));
+---
+
+<section class="product-preview" data-product-preview>
+  <div class="preview-tabs" role="tablist" aria-label={zh ? "产品界面模式" : "Product interface modes"}>
+    {tabs.map((tab, index) => <button type="button" role="tab" id={`preview-tab-${tab.id}`} aria-controls={`preview-panel-${tab.id}`} aria-selected={index === 0 ? "true" : "false"} tabindex={index === 0 ? 0 : -1} data-preview-tab={tab.id}>{tab.label}</button>)}
+  </div>
+  {tabs.map((tab, index) => <article class="preview-panel" role="tabpanel" id={`preview-panel-${tab.id}`} aria-labelledby={`preview-tab-${tab.id}`} hidden={index !== 0} data-preview-panel={tab.id}>
+    <header><span>{String.fromCharCode(65 + index)}</span><div><h4>{tab.title}</h4><p>{tab.copy}</p></div></header>
+    {tab.secondary && <div class="preview-subtabs" role="tablist" aria-label={zh ? "Compare 界面视图" : "Compare interface views"}>
+      <button type="button" role="tab" aria-selected="true" data-preview-view="result">{zh ? "比较结果" : "Comparison Result"}</button>
+      <button type="button" role="tab" aria-selected="false" data-preview-view="evidence">{zh ? "证据来源" : "Evidence Sources"}</button>
+    </div>}
+    <div class="preview-media">
+      <img src={tab.image} alt={tab.alt} loading="lazy" data-preview-image="result" />
+      {tab.secondary && <img src={tab.secondary} alt={zh ? "Compare 左右目标的独立证据来源" : "Independent evidence sources for both Compare targets"} loading="lazy" hidden data-preview-image="evidence" />}
+    </div>
+  </article>)}
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-product-preview]").forEach((preview) => {
+    const tabs = Array.from(preview.querySelectorAll<HTMLButtonElement>("[data-preview-tab]"));
+    const panels = Array.from(preview.querySelectorAll<HTMLElement>("[data-preview-panel]"));
+    const activate = (next: HTMLButtonElement) => {
+      tabs.forEach((tab) => { const active = tab === next; tab.setAttribute("aria-selected", String(active)); tab.tabIndex = active ? 0 : -1; });
+      panels.forEach((panel) => { panel.hidden = panel.dataset.previewPanel !== next.dataset.previewTab; });
+      next.focus();
+    };
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => activate(tab));
+      tab.addEventListener("keydown", (event) => {
+        if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+        event.preventDefault();
+        const offset = event.key === "ArrowRight" ? 1 : -1;
+        activate(tabs[(index + offset + tabs.length) % tabs.length]);
+      });
+    });
+    preview.querySelectorAll<HTMLButtonElement>("[data-preview-view]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const panel = button.closest<HTMLElement>("[data-preview-panel]");
+        if (!panel) return;
+        panel.querySelectorAll<HTMLButtonElement>("[data-preview-view]").forEach((item) => item.setAttribute("aria-selected", String(item === button)));
+        panel.querySelectorAll<HTMLImageElement>("[data-preview-image]").forEach((item) => { item.hidden = item.dataset.previewImage !== button.dataset.previewView; });
+      });
+    });
+  });
+</script>

@@ -1,0 +1,45 @@
+---
+import type { Locale } from "../data/site";
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const zh = locale === "zh";
+const valueRows = zh ? [
+  ["工程知识分散", "Grounded knowledge assistant", "缩短搜索与证据核对时间"],
+  ["新成员不了解内部系统", "Evidence-based answers", "加快 onboarding 任务完成"],
+  ["技术依据分散在多份文档", "Independent Compare workflow", "提高技术决策准备效率"],
+  ["Runbook 难以快速使用", "Read-only Troubleshooting", "提高故障响应一致性"],
+  ["AI 结果缺少信任基础", "Citation · refusal · trace", "降低验证成本与采用风险"],
+] : [
+  ["Engineering knowledge is fragmented", "Grounded knowledge assistant", "Reduce search and evidence-reconciliation time"],
+  ["New engineers lack system context", "Evidence-based answers", "Accelerate onboarding task completion"],
+  ["Technical rationale spans documents", "Independent Compare workflow", "Improve decision-preparation efficiency"],
+  ["Runbooks are slow to operationalize", "Read-only Troubleshooting", "Improve incident-response consistency"],
+  ["AI results lack a trust basis", "Citation · refusal · trace", "Reduce verification cost and adoption risk"],
+];
+const metrics = ["Time-to-answer", "Task completion rate", "Onboarding task efficiency", "Citation inspection rate", "Repeated-question reduction", "Incident resolution efficiency", "Knowledge reuse", "Cost per completed task", "Repeat usage by team"];
+const roadmap = zh ? [
+  {stage:"Current MVP", title:"可运行的受控知识产品", items:["Authorized Knowledge Base", "Document ingestion", "Ask · Compare · Troubleshoot", "Citation", "Refusal", "Runtime controls", "Versioned evaluation"]},
+  {stage:"Enterprise Expansion", title:"扩大组织采用边界", items:["Multi-tenant knowledge boundaries", "更细粒度 permission management", "Enterprise authentication expansion", "Audit trail", "Knowledge freshness controls"]},
+  {stage:"Future Capability", title:"用新的证据扩展能力", groups:[{name:"AI",items:["更大且更具代表性的 evaluation dataset", "Domain adaptation", "经评估证明价值后的 task planning"]},{name:"Globalization",items:["Chinese language support", "Multilingual retrieval", "Multilingual answer generation", "Multilingual evaluation"]},{name:"Integration",items:["Issue tracker integration", "Engineering knowledge connectors", "有明确 workflow 后的 MCP ecosystem"]}]},
+] : [
+  {stage:"Current MVP", title:"A working, controlled knowledge product", items:["Authorized Knowledge Base", "Document ingestion", "Ask · Compare · Troubleshoot", "Citation · refusal · runtime controls", "Versioned evaluation"]},
+  {stage:"Enterprise Expansion", title:"Expand organizational adoption boundaries", items:["Multi-tenant knowledge boundaries", "Finer-grained permission management", "Enterprise authentication expansion", "Audit trail · knowledge freshness controls"]},
+  {stage:"Future Capability", title:"Expand capabilities when new evidence earns them", groups:[{name:"AI",items:["Larger, more representative evaluation datasets", "Domain adaptation", "Task planning after evaluation proves value"]},{name:"Globalization",items:["Chinese language support", "Multilingual retrieval", "Multilingual answer generation and evaluation"]},{name:"Integration",items:["Issue tracker integration", "Engineering knowledge connectors", "MCP ecosystem after a concrete workflow justifies it"]}]},
+];
+---
+
+<div class="value-story">
+  <section>
+    <p class="story-kicker">A · Business Value Framework</p>
+    <div class="value-table"><div><span>User Problem</span><span>Product Capability</span><span>Potential Business Impact</span></div>{valueRows.map((row) => <div>{row.map((cell) => <span>{cell}</span>)}</div>)}</div>
+  </section>
+  <section>
+    <p class="story-kicker">B · Future Validation Metrics</p>
+    <p class="story-caption">{zh ? "下一阶段 pilot 将围绕以下业务指标开展验证。" : "The next pilot will validate the following business metrics."}</p>
+    <div class="value-metrics">{metrics.map((metric) => <span>{metric}</span>)}</div>
+  </section>
+  <section>
+    <p class="story-kicker">C · Future Development Roadmap</p>
+    <div class="roadmap-timeline">{roadmap.map((stage) => <article><header><span aria-hidden="true"></span><div><small>{stage.stage}</small><h3>{stage.title}</h3></div></header>{stage.items && <ul>{stage.items.map(item => <li>{item}</li>)}</ul>}{stage.groups && <div class="roadmap-groups">{stage.groups.map(group => <div><strong>{group.name}</strong><ul>{group.items.map(item => <li>{item}</li>)}</ul></div>)}</div>}</article>)}</div>
+  </section>
+</div>

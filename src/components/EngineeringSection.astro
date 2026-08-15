@@ -1,0 +1,69 @@
+---
+import type { Locale } from "../data/site";
+import ProductPreview from "./ProductPreview.astro";
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const zh = locale === "zh";
+const decisions = zh ? [
+  ["API 与应用边界", "FastAPI", "Typed API、依赖注入与 use-case coordination", "让验证、业务规则与 AI workflow 保持清晰边界"],
+  ["Canonical storage", "PostgreSQL", "保存用户、Knowledge Base、文档、chunk 与权限", "提供可审计的 canonical state"],
+  ["Retrieval index", "Qdrant", "保存可重建的向量检索表示", "支持 semantic retrieval，而不把索引当作 source of truth"],
+  ["Web boundary", "Next.js BFF", "Same-origin interaction 与 HttpOnly cookie", "收紧认证、浏览器与后端之间的安全边界"],
+  ["Local deployment", "Docker Compose", "可复现服务、migration 与 health check", "降低部署复杂度，不制造基础设施规模幻觉"],
+] : [
+  ["API & application", "FastAPI", "Typed APIs, dependency injection, and use-case coordination", "Keeps validation, business rules, and AI workflows separated"],
+  ["Canonical storage", "PostgreSQL", "Users, knowledge bases, documents, chunks, and permissions", "Provides auditable canonical state"],
+  ["Retrieval index", "Qdrant", "Rebuildable vector representations", "Enables semantic retrieval without treating the index as source of truth"],
+  ["Web boundary", "Next.js BFF", "Same-origin interaction and HttpOnly cookies", "Tightens the browser authentication and security boundary"],
+  ["Local deployment", "Docker Compose", "Reproducible services, migrations, and health checks", "Reduces delivery complexity without infrastructure scale theater"],
+];
+const harness = zh ? [
+  ["AgentState", "保存 route、evidence、citations、usage 与 request-local trace"],
+  ["AgentService", "45s workflow timeout · 12 step budget · typed terminal result"],
+  ["KnowledgeSearchTool", "10s tool timeout · 授权 Knowledge Base scope"],
+  ["Generation Policy", "最多 2 次 generation attempt · bounded transport retry"],
+  ["Output Budget", "workflow 3200 tokens · Compare 单次最多 1600"],
+  ["LangGraph Trace", "记录 node、step count、duration、error code 与 terminal status"],
+] : [
+  ["AgentState", "Stores route, evidence, citations, usage, and a request-local trace"],
+  ["AgentService", "45s workflow timeout · 12-step budget · typed terminal result"],
+  ["KnowledgeSearchTool", "10s tool timeout · authorized Knowledge Base scope"],
+  ["Generation Policy", "At most 2 generation attempts · bounded transport retry"],
+  ["Output Budget", "3200 tokens per workflow · 1600 maximum for one Compare call"],
+  ["LangGraph Trace", "Records node, step count, duration, error code, and terminal status"],
+];
+---
+
+<div class="engineering-story">
+  <section>
+    <p class="story-kicker">A · {zh ? "架构决策" : "Architecture Decisions"}</p>
+    <p class="story-caption">{zh ? "技术选择主要围绕产品边界、系统可靠性和交付成本进行设计。" : "Technology choices support product boundaries, system reliability, and delivery cost."}</p>
+    <div class="architecture-table" role="table">
+      <div class="architecture-head" role="row"><span>Layer</span><span>Technology</span><span>Why</span><span>Product Impact</span></div>
+      {decisions.map((row) => <div class="architecture-row" role="row">{row.map((cell) => <span role="cell">{cell}</span>)}</div>)}
+    </div>
+  </section>
+
+  <section>
+    <p class="story-kicker">B · AI Runtime Harness</p>
+    <p class="story-caption">{zh ? "本项目的 Agent workflow 会跨越路由、检索、生成、引用校验与重试。Harness 将这些步骤约束在可测试的执行边界内。" : "This product workflow crosses routing, retrieval, generation, citation validation, and retry. The Harness keeps those steps inside testable execution boundaries."}</p>
+    <div class="runtime-contrast">
+      <div><span>{zh ? "普通 API" : "Standard API"}</span><p>Request <i>→</i> Handler <i>→</i> Response</p></div>
+      <div><span>Agent Workflow</span><p>Request <i>→</i> Reasoning <i>→</i> Tool Call <i>→</i> Observation <i>→</i> Retry / Stop <i>→</i> Outcome</p></div>
+    </div>
+    <div class="harness-frame">
+      <header><span>IMPLEMENTED RUNTIME CONTROL LAYER</span><h3>Agent Runtime Harness</h3><p>{zh ? "当前系统已实现并测试以下执行控制。" : "The current system implements and tests the following execution controls."}</p></header>
+      <div>{harness.map(([title, copy]) => <article><strong>{title}</strong><span>{copy}</span></article>)}</div>
+      <div class="harness-outcomes"><span>{zh ? "允许的终态" : "Typed outcomes"}</span><b>Grounded Response</b><b>Insufficient Evidence</b><b>Provider Failure</b><b>Runtime Failure</b></div>
+      <footer><b>Observable</b><i>·</i><b>Recoverable</b><i>·</i><b>Controllable</b></footer>
+    </div>
+    <aside class="containment-evidence"><strong>{zh ? "Harness 将外部失败限制在明确的运行边界内。" : "The Harness contains external failures within explicit runtime boundaries."}</strong><div><span>Provider failure<br/><b>3.77% / 5.66%</b></span><i>→</i><span>Runtime failure<br/><b>0% / 0%</b></span><i>·</i><span>Refusal accuracy<br/><b>100% / 100%</b></span><i>·</i><span>Forbidden claims<br/><b>0</b></span></div><p>{zh ? "同一版本化 suite 的两次独立运行中，provider failure 被记录为 typed outcome；bounded retry、timeout、budget 与 permission checks 限制执行范围。" : "Across two independent runs of the same versioned suite, provider failures remain typed outcomes while retry, timeout, budget, and permission checks bound execution."}</p></aside>
+  </section>
+
+  <section>
+    <p class="story-kicker">C · {zh ? "交互式产品界面" : "Interactive Product Preview"}</p>
+    <p class="story-caption">{zh ? "同一受控工作台通过三种显式任务模式连接用户输入、AI 行为与证据反馈。" : "One controlled workspace connects user input, AI behavior, and evidence feedback through three explicit task modes."}</p>
+    <ProductPreview locale={locale} />
+  </section>
+
+</div>

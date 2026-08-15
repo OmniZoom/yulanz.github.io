@@ -1,0 +1,72 @@
+---
+import type { Locale } from "../data/site";
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const zh = locale === "zh";
+const metrics = [
+  ["Recall@1", "0.90", zh ? "首位排序仍有改进空间" : "Top-rank quality still has room to improve"],
+  ["Recall@5", "1.00", zh ? "相关证据全部进入候选集" : "All relevant evidence enters the candidate set"],
+  ["MRR", "0.95", zh ? "相关证据总体排名靠前" : "Relevant evidence generally ranks near the top"],
+  ["nDCG@5", "0.9495", zh ? "前五名排序质量稳定" : "Top-five ranking quality is stable"],
+  ["Citation resolution", "1.00", zh ? "返回引用可以解析" : "Returned citations resolve"],
+  ["Refusal accuracy", "1.00", zh ? "无证据任务正确拒答" : "Unsupported tasks are refused correctly"],
+];
+const coverage = [
+  ["Retrieval", 34, "59.6%"], ["Grounded Answer", 10, "17.5%"], ["Compare", 8, "14.0%"], ["Troubleshooting", 5, "8.8%"],
+];
+const failures = zh ? [
+  ["Retrieval / ranking miss", "精确标识符与语义查询表现不同", "Hybrid retrieval + optional reranking"],
+  ["Cross-target citation", "Compare context 与 provenance 混合", "独立检索 + citation ownership validation"],
+  ["Unsupported request", "相似片段不足以支撑结论", "Evidence Gate + explicit refusal"],
+  ["Provider failure", "外部 transport 或 availability", "Bounded retry + typed failure"],
+  ["Browser security failure", "CSP hydration 与 origin 配置错误", "Nonce CSP + trusted origin + regression tests"],
+] : [
+  ["Retrieval / ranking miss", "Exact identifiers and semantic queries behave differently", "Hybrid retrieval + optional reranking"],
+  ["Cross-target citation", "Compare context and provenance were mixed", "Independent retrieval + citation ownership validation"],
+  ["Unsupported request", "Similar text did not support a conclusion", "Evidence Gate + explicit refusal"],
+  ["Provider failure", "External transport or availability", "Bounded retry + typed failure"],
+  ["Browser security failure", "CSP hydration and origin configuration", "Nonce CSP + trusted origin + regression tests"],
+];
+---
+
+<div class="evaluation-story">
+  <section>
+    <p class="story-kicker">A · {zh ? "评估框架" : "Evaluation Framework"}</p>
+    <p class="story-caption">{zh ? "质量体系覆盖检索、答案、运行可靠性与系统性能。" : "The quality system covers retrieval, answers, runtime reliability, and system performance."}</p>
+    <div class="evaluation-framework">
+      <article><h3>Retrieval Quality</h3><p>Recall@K · MRR · nDCG@5</p></article>
+      <article><h3>Answer Quality</h3><p>Citation resolution · Human review</p></article>
+      <article><h3>Reliability</h3><p>Refusal accuracy · Typed failures</p></article>
+      <article><h3>System Performance</h3><p>Latency · Token usage · Cost evidence</p></article>
+    </div>
+  </section>
+
+  <section>
+    <p class="story-kicker">B · Benchmark Dashboard</p>
+    <p class="story-caption">{zh ? "最终统一评估包含 57 个版本化英文 authored cases，记录检索、答案、workflow 与运行结果。" : "The final unified evaluation contains 57 versioned authored English cases covering retrieval, answers, workflows, and runtime outcomes."}</p>
+    <div class="benchmark-table"><div class="benchmark-head"><span>Metric</span><span>Result</span><span>{zh ? "产品解读" : "Product interpretation"}</span></div>{metrics.map((row) => <div>{row.map((cell) => <span>{cell}</span>)}</div>)}</div>
+  </section>
+
+  <section>
+    <p class="story-kicker">C · {zh ? "评估覆盖" : "Evaluation Coverage"}</p>
+    <p class="story-caption">{zh ? "测试集覆盖检索、带证据答案、Compare 和 Troubleshooting。" : "The suite covers retrieval, grounded answers, Compare, and Troubleshooting."}</p>
+    <div class="coverage-bar" aria-label={zh ? "57 个评估案例的分布" : "Distribution of 57 evaluation cases"}>{coverage.map(([name, count, percent], index) => <span class={`coverage-${index + 1}`} style={`--share:${percent}`} title={`${name}: ${count} cases`}></span>)}</div>
+    <div class="coverage-grid">{coverage.map(([name, count, percent], index) => <article><i class={`coverage-${index + 1}`}></i><span>{name}</span><strong>{count}</strong><small>{percent}</small></article>)}</div>
+    <p class="chart-caveat">{zh ? "总计 57 cases：34 Retrieval、10 Grounded Answer、8 Compare、5 Troubleshooting。" : "57 cases total: 34 Retrieval, 10 Grounded Answer, 8 Compare, and 5 Troubleshooting."}</p>
+  </section>
+
+  <section>
+    <p class="story-kicker">D · {zh ? "可靠性概览" : "Reliability Overview"}</p>
+    <p class="story-caption">{zh ? "Run A 与 Run B 是同一版本、同一数据集和同一配置的两次独立执行，用于观察概率模型与外部 provider 的运行波动。" : "Run A and Run B are independent executions of the same version, dataset, and configuration, used to observe model and provider variability."}</p>
+    <div class="reliability-table"><div><span>Signal</span><b>Recorded Run A</b><b>Recorded Run B</b></div><div><span>Supported-task success</span><b>95.56%</b><b>93.33%</b></div><div><span>Provider failure</span><b>3.77%</b><b>5.66%</b></div><div><span>Runtime failure</span><b>0%</b><b>0%</b></div><div><span>Refusal accuracy</span><b>100%</b><b>100%</b></div></div>
+    <p class="chart-caveat">{zh ? "核心检索与拒答指标稳定；外部 provider 波动仍会影响端到端任务成功率，而 runtime control 将失败限制为明确终态。" : "Core retrieval and refusal metrics remained stable; provider variability still affects end-to-end success, while runtime controls contain failures as explicit terminal outcomes."}</p>
+  </section>
+
+  <section id="bad-cases">
+    <p class="story-kicker">E · {zh ? "失败分析与迭代" : "Failure Analysis and Iteration"}</p>
+    <p class="story-caption">{zh ? "失败分析连接根因、产品改进与回归验证。" : "Failure analysis connects root causes, product improvements, and regression validation."}</p>
+    <div class="failure-table"><div><span>Failure Type</span><span>Cause</span><span>Product Improvement</span></div>{failures.map((row) => <div>{row.map((cell) => <span>{cell}</span>)}</div>)}</div>
+  </section>
+
+  <p class="data-scope-note">{zh ? "范围：小规模英文 authored dataset。它用于可复现的产品质量验证，并明确下一步需要扩大的数据覆盖。" : "Scope: a small authored English dataset used for reproducible product-quality validation and to identify the next coverage gaps."}</p>
+</div>

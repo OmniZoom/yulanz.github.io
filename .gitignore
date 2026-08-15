@@ -22,3 +22,10 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# Private/raw source materials kept outside the public repository
+assets/
+
+# Superseded prototype source exports (the reviewed PNG is published)
+public/images/enterprise-agent/product-prototype.svg
+public/images/enterprise-agent/prototype.mmd

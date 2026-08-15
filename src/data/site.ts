@@ -2,30 +2,61 @@ export type Locale = "en" | "zh";
 
 export const profile = {
   en: {
-    name: "Abigail Mounind",
-    role: "AI Product & Engineering",
-    statement: "I turn ambiguous AI opportunities into measurable, bounded products that can be explained, evaluated, and shipped.",
-    location: "Portfolio · 2026",
+    name: "Yulan Zeng",
+    chineseName: "曾钰岚",
+    role: "AI Product · Engineering · Research",
     nav: [
       ["overview", "Overview"], ["projects", "Projects"], ["experience", "Experience"],
       ["research", "Research"], ["skills", "Skills"],
     ],
     resume: "Resume",
+    resumeHref: null,
     contact: "Contact",
+    contactHref: "mailto:abigailmounind@163.com",
     language: "中文",
   },
   zh: {
-    name: "Abigail Mounind",
-    role: "AI 产品与工程",
-    statement: "把模糊的 AI 机会转化为可衡量、有边界、能解释、能评估并能交付的产品。",
-    location: "个人作品集 · 2026",
+    name: "曾钰岚",
+    chineseName: "Yulan Zeng",
+    role: "AI 产品 · 工程 · 研究",
     nav: [
       ["overview", "概览"], ["projects", "项目"], ["experience", "经历"],
       ["research", "研究"], ["skills", "能力"],
     ],
     resume: "简历",
+    resumeHref: null,
     contact: "联系",
+    contactHref: "mailto:abigailmounind@163.com",
     language: "EN",
+  },
+} as const;
+
+export const overview = {
+  en: {
+    eyebrow: "PERSONAL WEBSITE",
+    title: "AI product, engineering, and research",
+    introduction: [
+      "I am Yulan Zeng, working at the intersection of AI product thinking, engineering, and research. My current focus is turning AI capabilities into systems with clear product boundaries, measurable evaluation, and deployable implementations.",
+      "My background spans AI research in electrical and computer engineering at Sungkyunkwan University and an engineering education at Zhejiang University. Research trained me to define problems, design experiments, and interpret evidence; product engineering extends that discipline into usable AI workflows and end-to-end delivery.",
+    ],
+    timelineLabel: "Education",
+    timeline: [
+      { period: "2024.09 — 2026.08", organization: "Sungkyunkwan University", role: "Researcher · Department of Electrical and Computer Engineering", description: "Completed master’s-level coursework and two years of AI research training across machine learning, deep learning, computer vision, graph neural networks, experimental design, and results validation." },
+      { period: "2019.09 — 2023.06", organization: "Zhejiang University", role: "B.Eng. · Agricultural Engineering", description: "Completed undergraduate engineering education and received the Zhejiang University Academic Scholarship for 2019–2020." },
+    ],
+  },
+  zh: {
+    eyebrow: "个人网站",
+    title: "AI 产品、工程与研究",
+    introduction: [
+      "我是曾钰岚，目前关注 AI 产品、工程与研究的交叉方向。我希望将 AI 能力转化为边界清晰、可以评测并能够部署的系统。",
+      "我的背景包括成均馆大学电气与计算机工程方向的 AI 科研训练，以及浙江大学的工科教育。科研经历让我持续练习问题定义、实验设计与证据分析；AI 产品工程则将这些方法延伸到可使用的 workflow 与端到端交付。",
+    ],
+    timelineLabel: "教育经历",
+    timeline: [
+      { period: "2024.09 — 2026.08", organization: "成均馆大学", role: "研究员 · 电气与计算机工程系", description: "完成硕士阶段课程与两年 AI 科研训练，涉及机器学习、深度学习、计算机视觉、图神经网络、实验设计与结果验证。" },
+      { period: "2019.09 — 2023.06", organization: "浙江大学", role: "农业工程 · 工学学士", description: "完成本科工科教育，并获得 2019–2020 学年浙江大学学业奖学金。" },
+    ],
   },
 } as const;
 
@@ -34,8 +65,8 @@ export const project = {
     eyebrow: "FEATURED AI PRODUCT CASE STUDY",
     title: "Enterprise Engineering Copilot",
     summary: "A citation-grounded knowledge and agent platform that helps engineering teams ask, compare, and troubleshoot against authorized evidence—not model memory.",
-    status: "v1.0.0 portfolio baseline",
-    actions: { caseStudy: "Read the case study", github: "View GitHub", release: "View release evidence" },
+    status: "v1.0.0 evaluated baseline",
+    actions: { caseStudy: "Read the case study", github: "View GitHub", video: "Video Demo", release: "View release evidence" },
     capabilities: ["Product definition", "RAG & retrieval", "Bounded agent workflows", "Evaluation", "Security", "Deployment"],
     outcomes: [
       ["57", "versioned evaluation cases"], ["1.00", "citation resolution"],
@@ -47,7 +78,7 @@ export const project = {
     title: "Enterprise Engineering Copilot",
     summary: "面向工程团队的引用可追溯知识与 Agent 平台：在授权证据范围内完成问答、比较与故障排查，而不是依赖模型记忆。",
     status: "v1.0.0 作品集基线",
-    actions: { caseStudy: "阅读完整案例", github: "查看 GitHub", release: "查看发布证据" },
+    actions: { caseStudy: "阅读完整案例", github: "查看 GitHub", video: "视频演示", release: "查看发布证据" },
     capabilities: ["产品定义", "RAG 与检索", "有边界的 Agent workflow", "Evaluation", "安全", "部署"],
     outcomes: [
       ["57", "个版本化评估案例"], ["1.00", "引用解析率"],
@@ -64,7 +95,7 @@ export const lifecycle = {
     ["prd", "PRD & acceptance", "The PRD converted the problem into observable outcomes: scoped ingestion, grounded answers, controlled refusal, resolvable citations, explicit failure states, and replaceable infrastructure.", "Each milestone had acceptance criteria and an owner approval gate before repository-changing work."],
     ["feasibility", "AI feasibility", "Feasibility was tested across embeddings, dense and sparse retrieval, hybrid fusion, optional reranking, structured generation, citation validation, provider behavior, and local resource limits.", "Model reasoning was used only where semantic generation added value; authorization, evidence ownership, budgets, and validation stayed deterministic."],
     ["workflow", "AI workflow", "Authenticated request → authorized Knowledge Base → typed task contract → retrieval Tool → evidence gate → Skill coordination → provider generation → application-owned citation validation.", "Every terminal outcome is explicit: grounded response, insufficient evidence, or typed failure."],
-    ["engineering", "Engineering implementation", "A modular FastAPI monolith owns business boundaries. PostgreSQL is canonical storage, Qdrant is a rebuildable index, Next.js is the public BFF, and LangGraph coordinates bounded steps.", "Docker Compose provides a reproducible single-host deployment without pretending the portfolio requires Kubernetes."],
+    ["engineering", "Engineering implementation", "A modular FastAPI monolith owns business boundaries. PostgreSQL is canonical storage, Qdrant is a rebuildable index, Next.js is the public BFF, and LangGraph coordinates bounded steps.", "Docker Compose provides a reproducible single-host deployment without pretending the project requires Kubernetes."],
     ["evaluation", "Evaluation", "A versioned 57-case suite measures Recall, MRR, nDCG, citation resolution, refusal accuracy, task success, latency, usage, failures, and bounded steps. Human review covers completed generated answers.", "Recall@1/5 is 0.90/1.00; MRR is 0.95; citation resolution and unsupported-refusal accuracy are both 1.00 in the recorded baseline and repeat."],
     ["bad-cases", "Bad cases", "Bad cases shaped the product: excessive comparison context, invalid cross-target citations, provider refusals, CSP-blocked hydration, fragile runtime-origin comparison, and broad retrieval queries rejected by the evidence gate.", "Each moved through symptom → root cause → user impact → bounded fix → regression test → remaining limitation."],
     ["analysis", "Data interpretation", "High Recall@5 did not erase the Recall@1 gap. Citation resolution did not become a claim of universal answer quality. Retrieval score was explicitly labeled as similarity, not confidence.", "A repeat run regressed from two provider failures to three; the failed gate stayed visible instead of selecting only the better run."],

@@ -1,0 +1,14 @@
+---
+import { experience } from "../data/profile-content";
+import type { Locale } from "../data/site";
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const copy = experience[locale];
+---
+<div class="experience-list">
+  {copy.items.map((item) => <article class="experience-item">
+    <div class="experience-meta"><time>{item.period}</time>{item.location && <span>{item.location}</span>}</div>
+    <div class="experience-body"><h2>{item.organization}</h2><p class="experience-role">{item.role}</p><ul>{item.details.map((detail) => <li>{detail}</li>)}</ul><div class="topic-list">{item.topics.map((topic) => <span>{topic}</span>)}</div></div>
+  </article>)}
+</div>
+<section class="honors"><p class="section-label">{copy.honorsTitle}</p><div>{copy.honors.map((honor) => <article><time>{honor.period}</time><h2>{honor.title}</h2></article>)}</div></section>

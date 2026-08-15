@@ -4,9 +4,17 @@ The portfolio separates measured evidence, product hypotheses, retrospective ana
 and known limitations. It must not invent user research, employment, publications,
 metrics, business impact, or cost.
 
-The homepage is a concise professional index. Long-form evidence belongs in project case
-studies. English is canonical; Chinese is maintained as an intentional translation rather
-than browser-generated text.
+The homepage is a personal academic, AI product, and engineering website. Overview gives a
+short narrative; Experience preserves detailed responsibilities; Research presents the
+first-author archived ST-HAR manuscript with its supplied figures and results; Skills uses
+evidence categories instead of invented percentage proficiency. Long-form product evidence
+belongs in project case studies. English is canonical; Chinese is maintained as an
+intentional translation rather than browser-generated text.
+
+The supplied resume is a private source document. Do not publish its phone number, birth
+date, gender, or ethnicity. A public Resume link remains disabled until a reviewed PDF is
+provided. OmniZoom is intentionally omitted because it is not first-author work and the
+owner chose not to feature it.
 
 ## Project video
 

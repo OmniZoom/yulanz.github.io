@@ -1,0 +1,14 @@
+---
+import { skills } from "../data/profile-content";
+import type { Locale } from "../data/site";
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const copy = skills[locale];
+---
+<div class="skill-groups">
+  {copy.groups.map((group) => <section class="skill-group"><header><h2>{group.title}</h2><p>{group.description}</p></header><div class="skill-rows">{group.skills.map((skill) => <div class="skill-row">
+    <strong>{skill.name}</strong>
+    <div class="skill-indicator" role="img" aria-label={`${skill.name}: ${skill.strength}%`}><i style={`--strength:${skill.strength}%`}></i></div>
+  </div>)}</div></section>)}
+</div>
+<section class="language-section"><p class="section-label">{copy.languagesTitle}</p><div>{copy.languages.map((language) => <article><h2>{language.name}</h2><p>{language.evidence}</p></article>)}</div></section>
