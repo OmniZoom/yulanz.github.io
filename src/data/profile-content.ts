@@ -29,6 +29,17 @@ export const experience: Record<Locale, {
     introduction: "A detailed record of my AI research training, engineering work, and education.",
     items: [
       {
+        period: "2026.08 — 2026.09",
+        organization: "WeChat Brand Article Formatter",
+        role: "Independent project · Product owner and frontend engineering",
+        details: [
+          "Led the product from user pain-point analysis and PRD through format prioritization, interaction design, acceptance criteria, and public delivery.",
+          "Designed a lightweight Chinese formatting system covering columns, text direction, emphasis, and nested styles, with preview warnings and graceful recovery for malformed markers.",
+          "Iterated the preview and clipboard output through real WeChat paste tests, then delivered a no-install public product on Cloudflare.",
+        ],
+        topics: ["Product 0→1", "PRD", "User experience", "WeChat compatibility", "React", "TypeScript", "Evaluation"],
+      },
+      {
         period: "2026.06 — 2026.08",
         organization: "Enterprise Engineering Copilot",
         role: "Independent project · Product owner and full-stack AI engineering",
@@ -74,6 +85,17 @@ export const experience: Record<Locale, {
     title: "学术与项目经历",
     introduction: "详细记录我的 AI 科研训练、工程实践与教育背景。",
     items: [
+      {
+        period: "2026.08 — 2026.09",
+        organization: "花西子公众号排版器",
+        role: "独立项目 · 产品负责人及前端工程",
+        details: [
+          "从用户痛点分析推进至 PRD、格式优先级、交互方案、验收标准与公开交付，完成产品 0→1 闭环。",
+          "设计覆盖分栏、文字方向、强调与嵌套样式的轻量中文格式体系，并通过预览提示和错误恢复降低编辑门槛。",
+          "基于真实微信公众号粘贴测试持续迭代预览与复制输出，最终以 Cloudflare 交付无需安装和配置的公开产品。",
+        ],
+        topics: ["产品 0→1", "PRD", "用户体验", "公众号兼容性", "React", "TypeScript", "Evaluation"],
+      },
       {
         period: "2026.06 — 2026.08",
         organization: "Enterprise Engineering Copilot",

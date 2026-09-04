@@ -1,0 +1,57 @@
+---
+import Icon from "./Icon.astro";
+import type { Locale } from "../data/site";
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const base = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/`;
+const asset = (path: string) => `${base}${path.replace(/^\//, "")}`;
+const projects = locale === "en" ? [
+  { id:"huaxizi", period:"2026.08 — 2026.09", title:"WeChat Brand Article Formatter", role:"Independent project · Product owner and frontend engineering", summary:"A browser-based formatter that turns plain copy and lightweight Chinese markers into branded WeChat article previews and copy-ready rich HTML.", highlights:["0→1 product planning","Lightweight formatting grammar","WeChat compatibility validation","Public no-setup delivery"], images:[asset("/images/huaxizi/workspace.png"),asset("/images/huaxizi/wechat-preview.png")], detail:asset("/projects/huaxizi-wechat-formatter/"), live:"https://huaxizi-editorial-formatter.landreth0102.workers.dev" },
+  { id:"enterprise", period:"2026.06 — 2026.08", title:"Enterprise Engineering Copilot", role:"Independent project · Product owner and full-stack AI engineering", summary:"A citation-grounded knowledge and bounded-agent product for engineering Q&A, technical comparison, and guided troubleshooting.", highlights:["57-case evaluation suite","Recall@5 100% · MRR 95%","Evidence gates and controlled refusal","Reproducible deployment"], images:[asset("/images/enterprise-agent/workspace.png"),asset("/images/enterprise-agent/grounded-answer.png")], detail:asset("/projects/enterprise-engineering-copilot/"), github:"https://github.com/abigailmounind/enterprise-agent" },
+] : [
+  { id:"huaxizi", period:"2026.08 — 2026.09", title:"花西子公众号排版器", role:"独立项目 · 产品负责人及前端工程", summary:"将普通文案与轻量中文格式标记转换为品牌化公众号预览，并生成可直接粘贴到微信公众号的富文本内容。", highlights:["产品 0→1 规划","轻量中文格式语法","公众号兼容性实测","免安装公开交付"], images:[asset("/images/huaxizi/workspace.png"),asset("/images/huaxizi/wechat-preview.png")], detail:asset("/zh/projects/huaxizi-wechat-formatter/"), live:"https://huaxizi-editorial-formatter.landreth0102.workers.dev" },
+  { id:"enterprise", period:"2026.06 — 2026.08", title:"Enterprise Engineering Copilot", role:"独立项目 · 产品负责人及全栈 AI 工程", summary:"面向工程团队的引用可追溯知识与受控 Agent 产品，覆盖可信问答、技术方案对比与故障排查。", highlights:["57 条统一评测集","Recall@5 100% · MRR 95%","证据门控与受控拒答","可复现部署"], images:[asset("/images/enterprise-agent/workspace.png"),asset("/images/enterprise-agent/grounded-answer.png")], detail:asset("/zh/projects/enterprise-engineering-copilot/"), github:"https://github.com/abigailmounind/enterprise-agent" },
+];
+---
+<section class="projects-index" aria-labelledby="projects-title">
+  <header class="projects-index-heading">
+    <p class="eyebrow">{locale === "en" ? "PRODUCT WORK" : "产品项目"}</p>
+    <h1 id="projects-title">{locale === "en" ? "Projects over time" : "项目时间轴"}</h1>
+    <p class="lede">{locale === "en" ? "Two end-to-end products, ordered from the most recent. Select a project to inspect its product story and evidence." : "按时间从近到远呈现两个端到端产品。点击项目标签，可在时间轴中展开产品简介与项目证据。"}</p>
+  </header>
+  <div class="project-timeline">
+    {projects.map((item, index) => (
+      <article class:list={["project-timeline-item", { active: index === 0 }]} data-project-item={item.id}>
+        <span class="project-timeline-node" aria-hidden="true"></span>
+        <button class="project-timeline-tab" type="button" data-project-trigger={item.id} aria-expanded={index === 0 ? "true" : "false"} aria-controls={`project-panel-${item.id}`}>
+          <time>{item.period}</time><strong>{item.title}</strong><span>{item.role}</span><i aria-hidden="true">＋</i>
+        </button>
+        <div class="project-timeline-panel" id={`project-panel-${item.id}`} data-project-panel={item.id} hidden={index !== 0}>
+          <p class="project-timeline-summary">{item.summary}</p>
+          <ul>{item.highlights.map((highlight) => <li>{highlight}</li>)}</ul>
+          <div class="project-timeline-media">{item.images.map((src, imageIndex) => <img src={src} alt={`${item.title} ${locale === "en" ? "project screenshot" : "项目截图"} ${imageIndex + 1}`} loading="lazy" />)}</div>
+          <div class="project-timeline-actions">
+            <a href={item.detail}><Icon name="document" />{locale === "en" ? "View detailed case" : "查看项目详情"}</a>
+            {item.live && <a href={item.live} target="_blank" rel="noreferrer">↗ {locale === "en" ? "Open live product" : "打开线上产品"}</a>}
+            {item.github && <a href={item.github} target="_blank" rel="noreferrer"><Icon name="github" />GitHub</a>}
+          </div>
+        </div>
+      </article>
+    ))}
+  </div>
+</section>
+<script>
+  const triggers = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-project-trigger]"));
+  const items = Array.from(document.querySelectorAll<HTMLElement>("[data-project-item]"));
+  const projectPanels = Array.from(document.querySelectorAll<HTMLElement>("[data-project-panel]"));
+  const activateProject = (id: string, updateHash = true) => {
+    triggers.forEach((trigger) => trigger.setAttribute("aria-expanded", String(trigger.dataset.projectTrigger === id)));
+    items.forEach((item) => item.classList.toggle("active", item.dataset.projectItem === id));
+    projectPanels.forEach((panel) => { panel.hidden = panel.dataset.projectPanel !== id; });
+    if (updateHash) history.replaceState(null, "", `#projects-${id}`);
+  };
+  triggers.forEach((trigger) => trigger.addEventListener("click", () => activateProject(trigger.dataset.projectTrigger ?? "huaxizi")));
+  const syncProjectHash = () => { const id = location.hash.replace("#projects-", ""); if (triggers.some((trigger) => trigger.dataset.projectTrigger === id)) activateProject(id, false); };
+  window.addEventListener("hashchange", syncProjectHash);
+  syncProjectHash();
+</script>

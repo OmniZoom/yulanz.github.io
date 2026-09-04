@@ -1,18 +1,13 @@
 ---
 import Sidebar from "./Sidebar.astro";
-import Icon from "./Icon.astro";
+import ProjectsTimeline from "./ProjectsTimeline.astro";
 import Experience from "./Experience.astro";
 import Research from "./Research.astro";
 import Skills from "./Skills.astro";
-import { overview, project, type Locale } from "../data/site";
+import { overview, type Locale } from "../data/site";
 interface Props { locale: Locale; }
 const { locale } = Astro.props;
-const copy = project[locale];
 const overviewCopy = overview[locale];
-const base = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/`;
-const asset = (path: string) => `${base}${path.replace(/^\//, "")}`;
-const caseHref = asset(locale === "en" ? "/projects/enterprise-engineering-copilot/" : "/zh/projects/enterprise-engineering-copilot/");
-const videoHref = "https://www.bilibili.com/video/BV1vZb16wEEU/";
 ---
 <div class="site-shell">
   <Sidebar locale={locale} />
@@ -34,10 +29,7 @@ const videoHref = "https://www.bilibili.com/video/BV1vZb16wEEU/";
       </section>
     </section>
     <section class="tab-panel" id="panel-projects" role="tabpanel" data-tab-panel="projects" hidden>
-      <h1>{copy.title}</h1><p class="lede">{copy.summary}</p>
-      <div class="paper-actions"><a href={caseHref}><Icon name="document" />{copy.actions.caseStudy}</a><a href="https://github.com/abigailmounind/enterprise-agent" target="_blank" rel="noreferrer"><Icon name="github" />{copy.actions.github}</a><a href={videoHref} target="_blank" rel="noreferrer"><Icon name="play" />{copy.actions.video}</a></div>
-      <div class="project-visual"><img src={asset("/images/enterprise-agent/workspace.png")} alt={locale === "en" ? "Enterprise Engineering Copilot workspace" : "Enterprise Engineering Copilot 工作台"} /></div>
-      <div class="metric-grid">{copy.outcomes.map(([value,label]) => <div><strong>{value}</strong><span>{label}</span></div>)}</div>
+      <ProjectsTimeline locale={locale} />
     </section>
     <section class="tab-panel" id="panel-experience" role="tabpanel" data-tab-panel="experience" hidden><Experience locale={locale} /></section>
     <section class="tab-panel" id="panel-research" role="tabpanel" data-tab-panel="research" hidden><Research locale={locale} /></section>
@@ -61,5 +53,7 @@ const videoHref = "https://www.bilibili.com/video/BV1vZb16wEEU/";
     next?.focus();
     select(next?.dataset.tabTarget ?? "overview");
   }));
-  const initial = location.hash.slice(1); if (tabs.some((tab) => tab.dataset.tabTarget === initial)) select(initial, false);
+  const initial = location.hash.slice(1);
+  if (initial.startsWith("projects-")) select("projects", false); else if (tabs.some((tab) => tab.dataset.tabTarget === initial)) select(initial, false);
+  window.addEventListener("hashchange", () => { if (location.hash.startsWith("#projects-")) select("projects", false); });
 </script>

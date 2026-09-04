@@ -1,9 +1,15 @@
 ---
 import Icon from "./Icon.astro";
-interface Props { title: string; providerUrl?: string; poster?: string; caption: string; }
-const { title, providerUrl, poster, caption } = Astro.props;
+interface Props { title: string; providerUrl?: string; videoSrc?: string; poster?: string; caption: string; }
+const { title, providerUrl, videoSrc, poster, caption } = Astro.props;
 ---
-{providerUrl && <figure class="video-embed">
+{videoSrc && <figure class="video-embed video-embed-native">
+  <video controls preload="metadata" poster={poster} aria-label={title}>
+    <source src={videoSrc} type="video/mp4" />
+  </video>
+  <figcaption>{title}</figcaption>
+</figure>}
+{!videoSrc && providerUrl && <figure class="video-embed">
   <a class="video-poster" href={providerUrl} target="_blank" rel="noreferrer" aria-label={`${caption}: ${title}`}>
     {poster && <img src={poster} alt="" />}
     <span><Icon name="play" size={24} />{caption}</span>

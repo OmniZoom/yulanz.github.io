@@ -1,0 +1,67 @@
+---
+import Sidebar from "./Sidebar.astro";
+import Icon from "./Icon.astro";
+import VideoEmbed from "./VideoEmbed.astro";
+import type { Locale } from "../data/site";
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const asset = (path: string) => `${import.meta.env.BASE_URL.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
+const liveHref = "https://huaxizi-editorial-formatter.landreth0102.workers.dev";
+const projectHref = asset(locale === "en" ? "/#projects-huaxizi" : "/zh/#projects-huaxizi");
+const videoSrc = asset("/videos/huaxizi-demo.mp4");
+const copy = locale === "en" ? {
+  title:"WeChat Brand Article Formatter", summary:"A no-setup browser product that converts plain copy and lightweight Chinese formatting markers into a branded preview and copy-ready WeChat rich text.",
+  meta:["Public MVP","2026.08 — 2026.09","Product · Frontend · Compatibility"], action:"Open live product", back:"Back to projects", video:"40-second product demo",
+  problem:"Content teams repeatedly rebuild typography and brand decoration, while browser-perfect layouts can break after being pasted into WeChat.",
+  role:"Independent product owner: product definition, interaction design, compatibility strategy, frontend implementation, testing, and delivery.",
+  outcome:"A public Paste → Parse → Preview → Copy workflow that requires no installation, configuration, server purchase, or custom domain.",
+} : {
+  title:"花西子公众号排版器", summary:"一个无需安装与配置的浏览器产品：将普通文案和轻量中文格式标记转换为品牌化预览，并生成可直接粘贴到微信公众号的富文本。",
+  meta:["公开 MVP","2026.08 — 2026.09","产品 · 前端 · 兼容性"], action:"打开线上产品", back:"返回项目时间轴", video:"40 秒产品演示",
+  problem:"内容团队需要反复调整字号、版式和品牌装饰，而浏览器中成立的设计在粘贴到微信公众号后还可能失真。",
+  role:"独立负责产品定义、交互设计、公众号兼容策略、前端实现、测试与公开交付。",
+  outcome:"完成 Paste → Parse → Preview → Copy 的公开闭环，用户无需安装、配置、购买服务器或绑定域名。",
+};
+---
+<div class="site-shell case-shell huaxizi-case"><Sidebar locale={locale} mode="case" caseSlug="huaxizi-wechat-formatter" />
+  <main class="main-column case-study">
+    <header class="case-hero huaxizi-hero">
+      <img class="huaxizi-brand-mark" src={asset("/images/huaxizi/brand-logo.png")} alt="" />
+      <h1>{copy.title}</h1><p class="lede">{copy.summary}</p>
+      <div class="paper-actions"><a href={liveHref} target="_blank" rel="noreferrer"><Icon name="play" />{copy.action}</a><a href="#product"><Icon name="document" />{locale === "en" ? "Read the product case" : "阅读产品案例"}</a></div>
+      <div class="case-meta">{copy.meta.map((item) => <span>{item}</span>)}</div>
+      <img class="huaxizi-workspace" src={asset("/images/huaxizi/workspace.png")} alt={locale === "en" ? "Formatter workspace" : "公众号排版器工作台"} />
+    </header>
+    <section class="case-summary">
+      <div><span>{locale === "en" ? "PROBLEM" : "问题"}</span><p>{copy.problem}</p></div>
+      <div><span>{locale === "en" ? "ROLE" : "角色"}</span><p>{copy.role}</p></div>
+      <div><span>{locale === "en" ? "OUTCOME" : "结果"}</span><p>{copy.outcome}</p></div>
+    </section>
+    <VideoEmbed title={copy.video} videoSrc={videoSrc} poster={asset("/images/huaxizi/workspace.png")} caption={copy.video} />
+    <section class="huaxizi-story" id="product">
+      <p class="eyebrow">01 · {locale === "en" ? "PRODUCT DEFINITION" : "产品定义"}</p>
+      <h2>{locale === "en" ? "Make branded publishing a repeatable product flow." : "把品牌排版从重复手工劳动变成可复用产品流程"}</h2>
+      <p>{locale === "en" ? "The product focuses on editors who already have finished copy. Instead of offering a complex design canvas, it standardizes a small set of formatting decisions and keeps the visual system controlled." : "产品面向已经完成文案的内容编辑，不提供复杂自由设计画布，而是用少量、可理解的格式能力统一品牌输出。"}</p>
+      <div class="huaxizi-flow"><span>Paste</span><i>→</i><span>Parse</span><i>→</i><span>Preview</span><i>→</i><span>Copy</span><i>→</i><span>WeChat</span></div>
+    </section>
+    <section class="huaxizi-story" id="format">
+      <p class="eyebrow">02 · {locale === "en" ? "FORMAT & EXPERIENCE" : "格式与体验"}</p>
+      <h2>{locale === "en" ? "Lightweight syntax, visible results, graceful recovery." : "轻量语法、结果可见、错误可恢复"}</h2>
+      <p>{locale === "en" ? "Chinese markers cover single and double columns, horizontal and vertical text, bold, italic, underline, and nesting. Invalid markers preserve the original copy and surface a warning instead of breaking the article." : "中文标记覆盖单栏、双栏、横排、竖排、加粗、斜体、下划线与嵌套；错误标记优先保留原文并提示，不让整篇文章失效。"}</p>
+      <div class="huaxizi-image-pair"><img src={asset("/images/huaxizi/vertical-layout.png")} alt={locale === "en" ? "Vertical layout" : "竖排效果"} /><img src={asset("/images/huaxizi/double-column.png")} alt={locale === "en" ? "Double-column layout" : "双栏效果"} /></div>
+    </section>
+    <section class="huaxizi-story" id="iteration">
+      <p class="eyebrow">03 · {locale === "en" ? "ITERATION & EVIDENCE" : "迭代与证据"}</p>
+      <h2>{locale === "en" ? "Use real WeChat failures to change the product." : "用真实公众号失败案例推动产品迭代"}</h2>
+      <p>{locale === "en" ? "Repeated paste tests exposed squeezed body text, opaque decoration frames, oversized vertical whitespace, and table-like double columns. Each failure changed the rendering strategy rather than being hidden behind the browser preview." : "多轮粘贴测试暴露了正文被压缩、透明装饰框变黑、竖排留白过长和双栏表格感等问题；每次失败都推动渲染策略调整，而不是只优化浏览器预览。"}</p>
+      <img class="huaxizi-phone-preview" src={asset("/images/huaxizi/wechat-preview.png")} alt={locale === "en" ? "WeChat article preview" : "微信公众号文章预览"} />
+    </section>
+    <section class="huaxizi-story" id="delivery">
+      <p class="eyebrow">04 · {locale === "en" ? "DELIVERY" : "公开交付"}</p>
+      <h2>{locale === "en" ? "From PRD to a link anyone can open." : "从 PRD 到任何人都能打开的链接"}</h2>
+      <p>{locale === "en" ? "The static product is deployed on Cloudflare Workers and OpenAI Sites. Seventy frontend tests and two server-side asset tests cover parsing, recovery, state, rendering, and clipboard behavior." : "产品以纯前端方式部署至 Cloudflare Workers 与 OpenAI Sites；70 项前端测试及 2 项素材服务测试覆盖解析、错误恢复、状态、渲染和复制行为。"}</p>
+      <div class="project-timeline-actions"><a href={liveHref} target="_blank" rel="noreferrer">↗ {copy.action}</a></div>
+    </section>
+    <footer class="case-footer"><div class="actions"><a class="primary-link" href={projectHref}>← {copy.back}</a></div></footer>
+  </main>
+</div>
