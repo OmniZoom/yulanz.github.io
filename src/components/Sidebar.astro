@@ -8,9 +8,14 @@ const otherHref = locale === "en"
   ? asset(mode === "home" ? "/zh/" : `/zh/projects/${caseSlug}/`)
   : asset(mode === "home" ? "/" : `/projects/${caseSlug}/`);
 const homeHref = asset(locale === "en" ? "/" : "/zh/");
+const moatHomeHref = `${homeHref}#projects-moat`;
 const huaxiziHomeHref = `${homeHref}#projects-huaxizi`;
 const enterpriseHomeHref = `${homeHref}#projects-enterprise`;
-const caseNav = caseSlug === "huaxizi-wechat-formatter"
+const caseNav = caseSlug === "personal-moat"
+  ? locale === "en"
+    ? [["problem","01 · Problem"],["framework","02 · Product"],["architecture","03 · Architecture"],["privacy","04 · Privacy"],["delivery","05 · Delivery"]]
+    : [["problem","01 · 问题"],["framework","02 · 产品框架"],["architecture","03 · 架构"],["privacy","04 · 隐私边界"],["delivery","05 · 交付状态"]]
+  : caseSlug === "huaxizi-wechat-formatter"
   ? locale === "en"
     ? [["product","01 · Product"],["format","02 · Format"],["iteration","03 · Iteration"],["delivery","04 · Delivery"]]
     : [["product","01 · 产品定义"],["format","02 · 格式体验"],["iteration","03 · 兼容迭代"],["delivery","04 · 公开交付"]]
@@ -30,6 +35,7 @@ const caseNav = caseSlug === "huaxizi-wechat-formatter"
       <div class:list={["nav-group", { "project-nav": id === "projects" }]}>
         <button class:list={["side-tab", { active: id === active }]} type="button" role="tab" data-tab-target={id} aria-controls={`panel-${id}`} aria-selected={id === active}>{label}</button>
         {id === "projects" && <div class="project-subnav">
+          <a href={moatHomeHref}>{locale === "en" ? "Personal Moat" : "人生护城河"}</a>
           <a href={huaxiziHomeHref}>{locale === "en" ? "WeChat Brand Formatter" : "花西子公众号排版器"}</a>
           <a href={enterpriseHomeHref}>{locale === "en" ? "Enterprise Engineering Copilot" : "企业工程 Copilot"}</a>
         </div>}

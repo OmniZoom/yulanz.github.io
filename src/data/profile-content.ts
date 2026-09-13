@@ -29,6 +29,17 @@ export const experience: Record<Locale, {
     introduction: "A detailed record of my AI research training, engineering work, and education.",
     items: [
       {
+        period: "2026.09 — Present",
+        organization: "Personal Moat · Three Rivers of Life",
+        role: "Independent project · Product strategy, UX, and full-stack engineering",
+        details: [
+          "Defined a privacy-conscious reflection and planning product around three stable lenses—survival, capability, and passion—connecting evidence gathering to user-confirmed paths, plans, and milestones.",
+          "Separated self-reported input, evidence, AI proposals, and confirmed records; designed empty states and deterministic fallback so unknown information is never presented as weakness or invented insight.",
+          "Delivered an isolated Cloudflare Pages → Worker → D1 environment with anonymous-subject isolation, export and deletion, same-origin guards, bounded AI usage, and private visitor administration.",
+        ],
+        topics: ["Product strategy", "Privacy by design", "UX", "JavaScript", "Cloudflare Workers", "D1", "AI governance", "Evaluation"],
+      },
+      {
         period: "2026.08 — 2026.09",
         organization: "WeChat Brand Article Formatter",
         role: "Independent project · Product owner and frontend engineering",
@@ -85,6 +96,17 @@ export const experience: Record<Locale, {
     title: "学术与项目经历",
     introduction: "详细记录我的 AI 科研训练、工程实践与教育背景。",
     items: [
+      {
+        period: "2026.09 — 至今",
+        organization: "人生护城河 · 人生三河",
+        role: "独立项目 · 产品策略、体验设计及全栈工程",
+        details: [
+          "围绕生存、能力、热爱三条稳定主河定义重视隐私的自我探索与规划产品，将证据整理连接到经用户确认的路径、计划与里程碑。",
+          "区分用户自述、已有证据、AI 提议和确认记录；设计真实空状态与确定性降级，使未知信息不被包装成薄弱或虚构洞察。",
+          "完成隔离的 Cloudflare Pages → Worker → D1 环境，覆盖匿名主体隔离、导出与删除、同源保护、有边界的 AI 调用和私有访客管理。",
+        ],
+        topics: ["产品策略", "隐私设计", "用户体验", "JavaScript", "Cloudflare Workers", "D1", "AI 治理", "Evaluation"],
+      },
       {
         period: "2026.08 — 2026.09",
         organization: "花西子公众号排版器",
